@@ -18,7 +18,7 @@ pub fn parse_input(path: &str, method: Method) -> io::Result<Vec<String>> {
 
     let mut input = Vec::new();
     file.read_to_end(&mut input)?;
-    let text = str::from_utf8(&input).unwrap();
+    let text: &str = str::from_utf8(&input).unwrap();
 
     let lines = match method {
         Method::OneString => {
@@ -32,9 +32,12 @@ pub fn parse_input(path: &str, method: Method) -> io::Result<Vec<String>> {
             lines
         },
         Method::Other(char) => {
-            let v: Vec<&str> = text.split(char).collect();
+            let splitter = char.to_string();
+            let text = text.replace("\n", &splitter);
+            let text = text.replace("\r", &splitter);
+
+            let v: Vec<&str> = text.split_terminator(&splitter).collect();
             for item in v {
-                let item = item.trim();
                 lines.push(String::from(item));
             }
             println!("{:?}", lines);
