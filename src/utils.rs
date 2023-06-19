@@ -34,9 +34,10 @@ pub fn parse_input(path: &str, method: Method) -> io::Result<Vec<String>> {
         Method::Other(char) => {
             let v: Vec<&str> = text.split(char).collect();
             for item in v {
-                lines.push(String::from(item.trim()));
-                println!("{item}");
+                let item = item.trim();
+                lines.push(String::from(item));
             }
+            println!("{:?}", lines);
             lines
         }
     };
