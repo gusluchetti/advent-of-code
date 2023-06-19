@@ -2,17 +2,16 @@ use std::{io, io::prelude::*};
 use std::fs::File;
 use std::str;
 
-// parse puzzle input in a couple ways:
-// default - no method (whole input as ONE string)
-// new line method (array of lines)
-// other method (any other character or word)
-
 pub enum Method {
     NewLine,
     OneString,
     Other(char)
 }
 
+// parse puzzle input in a couple ways:
+// default - no method (whole input as ONE string)
+// new line method (array of lines)
+// other method (any other character or word)
 pub fn parse_input(path: &str, method: Method) -> io::Result<Vec<String>> {
     let mut file = File::open(path)?;
     let mut lines: Vec<String> = Vec::new();
