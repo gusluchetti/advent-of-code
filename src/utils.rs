@@ -12,13 +12,13 @@ pub enum Method {
 // default - no method (whole input as ONE string)
 // new line method (array of lines)
 // other method (any other character or word)
-pub fn parse_input(path: &str, method: Method) -> io::Result<Vec<String>> {
-    let mut file = File::open(path)?;
+pub fn parse_input(path: &str, method: Method) -> Vec<String> {
+    let mut file = File::open(path).expect("file should exist");
     let mut lines: Vec<String> = Vec::new();
 
     let mut input = Vec::new();
-    file.read_to_end(&mut input)?;
-    let text: &str = str::from_utf8(&input).unwrap();
+    file.read_to_end(&mut input).expect("file should be readable");
+    let text: &str = str::from_utf8(&input).expect("should convert to str");
 
     let lines = match method {
         Method::OneString => {
@@ -45,5 +45,5 @@ pub fn parse_input(path: &str, method: Method) -> io::Result<Vec<String>> {
         }
     };
 
-    return Ok(lines);
+    return lines;
 }
