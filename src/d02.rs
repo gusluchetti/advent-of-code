@@ -56,13 +56,10 @@ fn task1() -> () {
                 width,
                 height
             };
-            println!("{:?}", box_size);
             let box_paper = box_size.surface_area() + box_size.smallest_side();
             total_paper = total_paper + box_paper;
-            println!("total paper is: {}", total_paper);
         }
     }
-
     println!("TOTAL paper needed: {}", total_paper);
 }
 
@@ -82,11 +79,9 @@ fn task2() -> () {
                 width,
                 height
             };
-            println!("{:?}", box_size);
             let ribbon = box_size.ribbon_size() + box_size.cubic_volume();
             total_ribbon = total_ribbon + ribbon;
         }
     }
-
     println!("TOTAL ribbon length needed: {}", total_ribbon);
 }
