@@ -9,7 +9,6 @@ fn main() {
 
 fn task1() -> () {
     let input = parse_input(INPUT_PATH, Method::OneString);
-    let input: Vec<String> = input.ok().unwrap();
 
     let mut counter = 0;
     for inst in input[0].chars() {
@@ -25,7 +24,6 @@ fn task1() -> () {
 
 fn task2() -> () {
     let input = parse_input(INPUT_PATH, Method::OneString);
-    let input: Vec<String> = input.ok().unwrap();
 
     let mut counter = 0;
     for (i, inst) in input[0].chars().enumerate() {

@@ -42,7 +42,6 @@ fn main() {
 
 fn task1() -> () {
     let input = parse_input(INPUT_PATH, Method::NewLine);
-    let input: Vec<String> = input.ok().unwrap();
 
     let mut total_paper = 0;
     for n in input {
@@ -69,7 +68,6 @@ fn task1() -> () {
 
 fn task2() -> () {
     let input = parse_input(INPUT_PATH, Method::NewLine);
-    let input: Vec<String> = input.ok().unwrap();
 
     let mut total_ribbon = 0;
     for n in input {
