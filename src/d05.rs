@@ -38,6 +38,8 @@ fn main() {
     task2();
 }
 
+///
+
 fn twice_row_char(string: &str) -> bool {
     let mut characters = string.chars();
     let mut last_c = characters.next().unwrap();
@@ -48,6 +50,7 @@ fn twice_row_char(string: &str) -> bool {
             last_c = c;
         }
     }
+
     false
 }
 
@@ -93,7 +96,6 @@ fn task1() -> () {
     let mut nice_strings: u32 = 0;
 
     for line in input {
-        println!("{:?}", line);
         if is_nice_string(line.as_str()) {
             nice_strings = nice_strings + 1;
         }
@@ -101,4 +103,37 @@ fn task1() -> () {
     println!("number of nice strings: {nice_strings}");
 }
 
-fn task2() -> () {}
+///
+
+fn pair_two_letters(string: &str) -> bool {
+    let chars: Vec<char> = string.chars().collect();
+    false
+}
+
+fn repeat_with_between(string: &str) -> bool {
+    let chars: Vec<char> = string.chars().collect();
+    for i in 0..chars.len() {
+
+    }
+    false
+}
+
+fn is_nicest_string(string: &str) -> bool {
+    if pair_two_letters(string) && repeat_with_between(string) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+fn task2() -> () {
+    let input = parse_input(INPUT_PATH, Method::NewLine);
+    let mut nice_strings: u32 = 0;
+
+    for line in input {
+        if is_nicest_string(line.as_str()) {
+            nice_strings = nice_strings + 1;
+        }
+    }
+    println!("number of nice strings: {nice_strings}");
+}
