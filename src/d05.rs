@@ -81,12 +81,10 @@ fn is_nice_string(string: &str) -> bool {
         }
     }
 
-    if three_vowel_count(string)
-        && twice_row_char(string)
-    {
-        true
+    if three_vowel_count(string) && twice_row_char(string) {
+        return true;
     } else {
-        false
+        return false;
     }
 }
 
