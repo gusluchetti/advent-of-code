@@ -1,4 +1,4 @@
-use advent_of_code_2015::utils::{Method, parse_input, self};
+use advent_of_code_2015::utils::{Method, parse_input};
 
 const INPUT_PATH: &str = "src/inputs/d05.txt";
 
@@ -8,7 +8,7 @@ fn main() {
 }
 
 fn task1() -> () {
-    let input = utils::parse_input(INPUT_PATH, Method::NewLine);
+    let input = parse_input(INPUT_PATH, Method::NewLine);
     println!("{:?}", input);
 }
 
