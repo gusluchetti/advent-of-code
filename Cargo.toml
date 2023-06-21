@@ -10,6 +10,10 @@ path = 'src/d02.rs'
 name = 'd03'
 path = 'src/d03.rs'
 
+[[bin]]
+name = 'd04'
+path = 'src/d04.rs'
+
 [package]
 name = "advent_of_code_2015"
 version = "0.1.0"
