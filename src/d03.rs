@@ -8,8 +8,6 @@ fn main() {
     task2();
 }
 
-// state: cartesian coordinate system
-// whats the best way to save it?
 fn task1() {
     let input = parse_input(INPUT_PATH, Method::OneString);
     let directions: String = String::from(&input[0]);
@@ -64,7 +62,7 @@ fn task2() {
         coords
     }
     
-    let mut coords = String::from("0,0");
+    let mut coords: String;
     for dir in directions.chars() {
         if turn == 0 || turn % 2 == 0 {
             coords = get_new_coords(dir, &mut x1, &mut y1);
