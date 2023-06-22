@@ -117,13 +117,12 @@ fn task1() -> () {
 ///
 
 fn two_pairs(string: &str) -> bool {
-    println!("{string}");
     let chars: Vec<char> = string.chars().collect();
     for i in 0..chars.len()-1 {
         for j in 0..chars.len()-1 {
             let first = &chars[i..=i+1];
             let second = &chars[j..=j+1];
-            if i != j + 1 && j != i && j != i + 1 {
+            if j > i + 1 {
                 if first == second {
                 println!("{:?},{:?} -- i:{i}, j:{j}", first, second);
                     println!("{string} has two distinct pairs!");
@@ -139,6 +138,7 @@ fn repeat_with_between(string: &str) -> bool {
     let chars: Vec<char> = string.chars().collect();
     for i in 0..chars.len()-3 {
         if chars[i] == chars[i+2] {
+            println!("{:?},{:?} at {i}", chars[i], chars[i+2]);
             println!("{string} consecutive chars with one in between");
             return true;
         }
