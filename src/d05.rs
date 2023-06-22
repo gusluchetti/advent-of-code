@@ -111,7 +111,6 @@ fn task1() -> () {
             nice_strings = nice_strings + 1;
         }
     }
-    println!("number of nice strings: {nice_strings}");
 }
 
 ///
@@ -119,26 +118,26 @@ fn task1() -> () {
 fn two_pairs(string: &str) -> bool {
     let chars: Vec<char> = string.chars().collect();
     for i in 0..chars.len()-1 {
-        for j in 0..chars.len()-1 {
+        for j in 2..chars.len()-1 {
             let first = &chars[i..=i+1];
             let second = &chars[j..=j+1];
-            if j > i + 1 {
-                if first == second {
+            if j > i + 1 && first == second {
                 println!("{:?},{:?} -- i:{i}, j:{j}", first, second);
-                    println!("{string} has two distinct pairs!");
-                    return true;
-                }
+                println!("{string} has two two-letter pairs!");
+                return true;
             }
         }
     }
+
     return false;
 }
 
 fn repeat_with_between(string: &str) -> bool {
     let chars: Vec<char> = string.chars().collect();
-    for i in 0..chars.len()-3 {
-        if chars[i] == chars[i+2] {
-            println!("{:?},{:?} at {i}", chars[i], chars[i+2]);
+    for i in 0..chars.len()-2 {
+        let j = i + 2;
+        if chars[i] == chars[j] {
+            println!("{:?} at {i} and {j}", &chars[i..=i+2]);
             println!("{string} consecutive chars with one in between");
             return true;
         }
@@ -156,6 +155,7 @@ fn is_nicest_string(string: &str) -> bool {
 
 fn task2() -> () {
     let input = parse_input(INPUT_PATH, Method::NewLine);
+    let mut counter = 1;
     let mut nice_strings: u32 = 0;
 
     for line in input {
@@ -163,8 +163,9 @@ fn task2() -> () {
             println!("{line} is nice!");
             nice_strings = nice_strings + 1;
         } else {
-            println!("bad! {line}");
+            println!("word {counter} is bad! {line}");
         }
+        counter = counter + 1;
     }
     println!("number of nice strings: {nice_strings}");
 }
