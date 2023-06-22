@@ -63,7 +63,7 @@ fn parse_instructions(lines: Vec<String>, new_pattern: bool) -> Vec<Instructions
     instructions
 }
 
-fn turn_lights_on (lights: &mut Vec<Vec<u32>>, instructions: &Vec<Instructions>) -> (u32, u32) {
+fn turn_lights_on(lights: &mut Vec<Vec<u32>>, instructions: &Vec<Instructions>) -> (u32, u32) {
     for i in instructions {
         for y in i.y_path.0..=i.y_path.1 {
             for x in i.x_path.0..=i.x_path.1 {
@@ -77,7 +77,7 @@ fn turn_lights_on (lights: &mut Vec<Vec<u32>>, instructions: &Vec<Instructions>)
                         }
                         Action::TurnOff => {
                             if lights[y][x] > 0 {
-                                lights[y][x] = lights[y][x] - 1 ;
+                                lights[y][x] = lights[y][x] - 1;
                             }
                         }
                         Action::Toggle => {
@@ -90,7 +90,7 @@ fn turn_lights_on (lights: &mut Vec<Vec<u32>>, instructions: &Vec<Instructions>)
                             lights[y][x] = 1;
                         }
                         Action::TurnOff => {
-                            lights[y][x] = 0 ;
+                            lights[y][x] = 0;
                         }
                         Action::Toggle => {
                             if lights[y][x] == 0 {
@@ -112,7 +112,7 @@ fn turn_lights_on (lights: &mut Vec<Vec<u32>>, instructions: &Vec<Instructions>)
             let y = y as usize;
             let x = x as usize;
             b_c = b_c + lights[y][x];
-            if lights[y][x] >= 1  {
+            if lights[y][x] >= 1 {
                 counter = counter + 1;
             }
         }
