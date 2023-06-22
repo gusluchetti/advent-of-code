@@ -1,4 +1,4 @@
-use advent_of_code_2015::utils::{Method, parse_input};
+use advent_of_code_2015::utils::{parse_input, Method};
 use md5;
 use md5::Digest;
 
@@ -33,7 +33,9 @@ mod tests {
 pub fn find_lowest_number(secret: &str, num_zeroes: u8) -> u32 {
     let mut lowest = 0;
     let mut zeroes: String = "".to_string();
-    for _ in 0..num_zeroes { zeroes.push('0') }
+    for _ in 0..num_zeroes {
+        zeroes.push('0')
+    }
 
     for n in 1.. {
         let source = format!["{secret}{n}"];
@@ -46,7 +48,6 @@ pub fn find_lowest_number(secret: &str, num_zeroes: u8) -> u32 {
         }
     }
     lowest
-
 }
 
 fn main() {

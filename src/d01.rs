@@ -1,4 +1,4 @@
-use advent_of_code_2015::utils::{Method, parse_input};
+use advent_of_code_2015::utils::{parse_input, Method};
 
 const INPUT_PATH: &str = "src/inputs/d01.txt";
 
@@ -12,10 +12,9 @@ fn task1() -> () {
 
     let mut counter = 0;
     for inst in input[0].chars() {
-        if inst == '(' { 
-            counter = counter + 1; 
-        }
-        else if inst == ')' { 
+        if inst == '(' {
+            counter = counter + 1;
+        } else if inst == ')' {
             counter = counter - 1;
         }
     }
@@ -27,15 +26,14 @@ fn task2() -> () {
 
     let mut counter = 0;
     for (i, inst) in input[0].chars().enumerate() {
-        if inst == '(' { 
-            counter = counter + 1; 
-        }
-        else if inst == ')' { 
+        if inst == '(' {
+            counter = counter + 1;
+        } else if inst == ')' {
             counter = counter - 1;
         }
 
         if counter == -1 {
-            println!("got in basement at {} instruction", i+1); 
+            println!("got in basement at {} instruction", i + 1);
             break;
         }
     }

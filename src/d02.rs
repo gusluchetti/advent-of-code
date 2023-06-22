@@ -1,4 +1,4 @@
-use advent_of_code_2015::utils::{Method, parse_input};
+use advent_of_code_2015::utils::{parse_input, Method};
 
 const INPUT_PATH: &str = "src/inputs/d02.txt";
 
@@ -6,7 +6,7 @@ const INPUT_PATH: &str = "src/inputs/d02.txt";
 struct Size {
     length: u32,
     width: u32,
-    height: u32
+    height: u32,
 }
 
 impl Size {
@@ -23,11 +23,11 @@ impl Size {
         vec.sort();
         vec[0] * vec[1]
     }
-    
+
     fn ribbon_size(&self) -> u32 {
         let mut vec = vec![self.length, self.width, self.height];
         vec.sort();
-        2*vec[0] + 2*vec[1]
+        2 * vec[0] + 2 * vec[1]
     }
 
     fn cubic_volume(&self) -> u32 {
@@ -54,7 +54,7 @@ fn task1() -> () {
             let box_size = Size {
                 length,
                 width,
-                height
+                height,
             };
             let box_paper = box_size.surface_area() + box_size.smallest_side();
             total_paper = total_paper + box_paper;
@@ -77,7 +77,7 @@ fn task2() -> () {
             let box_size = Size {
                 length,
                 width,
-                height
+                height,
             };
             let ribbon = box_size.ribbon_size() + box_size.cubic_volume();
             total_ribbon = total_ribbon + ribbon;
