@@ -7,29 +7,40 @@ const INPUT_PATH: &str = "src/inputs/d05.txt";
 mod tests {
     use super::*;
     #[test]
-    fn test_twice_row_char() {
-        assert_eq!(twice_row_char("aa"), true);
-        assert_eq!(twice_row_char("ab"), false);
-        assert_eq!(twice_row_char("aba"), false);
+    fn test_task1_helpers() {
         assert_eq!(twice_row_char("lajkdkdabb"), true);
-    }
-    #[test]
-    fn test_three_vowels() {
-        assert_eq!(three_vowel_count("aaa"), true);
+        assert_eq!(twice_row_char("aba"), false);
+
         assert_eq!(three_vowel_count("understand"), true);
         assert_eq!(three_vowel_count("bbb"), false);
     }
 
     #[test]
-    fn test_nice_strings() {
+    fn test_task2_helpers() {
+        assert_eq!(two_pairs("aabcdefgaa"), true);
+        assert_eq!(two_pairs("aaa"), false);
+
+        assert_eq!(repeat_with_between("abcdefeghi"), true);
+        assert_eq!(repeat_with_between("xxaabbcc"), false);
+    }
+
+    #[test]
+    fn test_full_task1() {
         assert_eq!(is_nice_string("ugknbfddgicrmopn"), true);
         assert_eq!(is_nice_string("aaa"), true);
-    }
-    #[test]
-    fn test_naughty_strings() {
+
         assert_eq!(is_nice_string("jchzalrnumimnmhp"), false);
-        assert_eq!(is_nice_string("haegwjzuvuyypxyu"), false);
         assert_eq!(is_nice_string("dvszwmarrgswjxmb"), false);
+    }
+
+    #[test]
+    fn test_full_task2() {
+        assert_eq!(is_nicest_string("qjhvhtzxzqqjkmpb"), true);
+        assert_eq!(is_nicest_string("xxyxx"), true);
+        assert_eq!(is_nicest_string("hubpbvxknepammep"), true);
+
+        assert_eq!(is_nicest_string("uurcxstgmygtbstg"), false);
+        assert_eq!(is_nicest_string("ieodomkazucvgmuy"), false);
     }
 }
 
@@ -105,21 +116,37 @@ fn task1() -> () {
 
 ///
 
-fn pair_two_letters(string: &str) -> bool {
+fn two_pairs(string: &str) -> bool {
     let chars: Vec<char> = string.chars().collect();
-    false
+    for i in 0..chars.len()-1 {
+        for j in 0..chars.len()-1 {
+            let first = &chars[i..=i+1];
+            let second = &chars[j..=j+1];
+            if j != i {
+                println!("{:?},{:?} -- i:{i}, j:{j}", first, second);
+                if first == second {
+                    println!("{string} has two distinct pairs!");
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 fn repeat_with_between(string: &str) -> bool {
     let chars: Vec<char> = string.chars().collect();
-    for i in 0..chars.len() {
-
+    for i in 0..chars.len()-3 {
+        if chars[i] == chars[i+2] {
+            println!("{string} consecutive chars with one in between");
+            return true;
+        }
     }
-    false
+    return false;
 }
 
 fn is_nicest_string(string: &str) -> bool {
-    if pair_two_letters(string) && repeat_with_between(string) {
+    if two_pairs(string) && repeat_with_between(string) {
         return true;
     } else {
         return false;
@@ -132,7 +159,10 @@ fn task2() -> () {
 
     for line in input {
         if is_nicest_string(line.as_str()) {
+            println!("{line} is nice!");
             nice_strings = nice_strings + 1;
+        } else {
+            println!("bad! {line}");
         }
     }
     println!("number of nice strings: {nice_strings}");
