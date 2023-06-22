@@ -16,21 +16,21 @@ mod tests {
     }
 
     #[test]
-    fn test_task2_helpers() {
-        assert_eq!(two_pairs("aabcdefgaa"), true);
-        assert_eq!(two_pairs("aaa"), false);
-
-        assert_eq!(repeat_with_between("abcdefeghi"), true);
-        assert_eq!(repeat_with_between("xxaabbcc"), false);
-    }
-
-    #[test]
     fn test_full_task1() {
         assert_eq!(is_nice_string("ugknbfddgicrmopn"), true);
         assert_eq!(is_nice_string("aaa"), true);
 
         assert_eq!(is_nice_string("jchzalrnumimnmhp"), false);
         assert_eq!(is_nice_string("dvszwmarrgswjxmb"), false);
+    }
+
+    #[test]
+    fn test_task2_helpers() {
+        assert_eq!(two_pairs("aabcdefgaa"), true);
+        assert_eq!(two_pairs("aaa"), false);
+
+        assert_eq!(repeat_with_between("abcdefeghi"), true);
+        assert_eq!(repeat_with_between("xxaabbcc"), false);
     }
 
     #[test]
@@ -117,14 +117,15 @@ fn task1() -> () {
 ///
 
 fn two_pairs(string: &str) -> bool {
+    println!("{string}");
     let chars: Vec<char> = string.chars().collect();
     for i in 0..chars.len()-1 {
         for j in 0..chars.len()-1 {
             let first = &chars[i..=i+1];
             let second = &chars[j..=j+1];
-            if j != i {
-                println!("{:?},{:?} -- i:{i}, j:{j}", first, second);
+            if i != j + 1 && j != i && j != i + 1 {
                 if first == second {
+                println!("{:?},{:?} -- i:{i}, j:{j}", first, second);
                     println!("{string} has two distinct pairs!");
                     return true;
                 }
