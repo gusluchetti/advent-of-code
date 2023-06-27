@@ -37,7 +37,7 @@ fn main() {
         .map(String::from)
         .collect();
 
-    // task1();
+    task1(lines);
     // task2();
 }
 
@@ -45,27 +45,37 @@ fn main() {
 fn run_backwards(
     circuit: &HashMap<String, Vec<String>>,
     results: &mut HashMap<String, u16>,
-    key: &str,
+    sender: &str,
 ) -> u16 {
-    println!("{:?}\n", circuit);
-    let mut new_key = key.clone();
-    let mut signal: Option<&u16> = results.get(new_key);
-    while signal == None {
-        let mut value = new_key.parse::<u16>();
-        println!("tried to parse {new_key}, got {:?}", value);
-        if !value.is_err() {
-            // should save value to results
-            let signal = value.unwrap();
-            results.entry(new_key.to_string()).or_insert(signal);
-            return signal;
-        } else {
-            // go back another value
-            value = circuit[new_key][0].parse::<u16>();
-            println!("new_key: {:?}, value: {:?}, ", new_key, value);
-        }
+    let msg = results.get(sender);
+    if msg != None {
+        let signal = msg.unwrap().clone();
+        println!("known value for {sender}: {:?}", signal);
+        return signal;
     }
 
-    return signal.unwrap().clone();
+    // sender is either &str or number
+    let mut value = sender.parse::<u16>();
+    println!("got {:?} from {:?}", value, sender);
+    let mut last = sender;
+    let mut cur = sender;
+    while value.is_err() {
+        last = cur;
+        if circuit[last].len() == 2 {
+            cur = circuit[last][1].as_str();
+        } else {
+            cur = circuit[last][0].as_str();
+        }
+        value = cur.parse::<u16>();
+        println!("looked back, got {:?} from {:?}", value, cur);
+    }
+
+    let signal = value.unwrap();
+    if last.parse::<u16>().is_err() {
+        println!("saving {last} with {signal}");
+        results.entry(last.to_string()).or_insert(signal);
+    }
+    return signal;
 }
 
 fn set_circuit(lines: Vec<String>) -> HashMap<String, Vec<String>> {
@@ -91,6 +101,12 @@ fn read_circuit(circuit: &HashMap<String, Vec<String>>) -> HashMap<String, u16> 
         println!("{:?} receives {:?}", receiver, sender);
         let mut msg: u16 = 0;
 
+        if results.get(receiver) != None {
+            msg = results.get(receiver).unwrap().clone();
+            println!("receiver ({:?}) is known already as {:?}", receiver, msg);
+            continue;
+        }
+
         match sender.len() {
             3 => {
                 let first = run_backwards(circuit, &mut results, sender[0].as_str());
@@ -114,12 +130,18 @@ fn read_circuit(circuit: &HashMap<String, Vec<String>>) -> HashMap<String, u16> 
             }
             _ => {}
         }
-        println!("{:?}\n", results);
+        results.entry(receiver.to_string()).or_insert(msg);
+        println!("READ: saving {receiver} with {msg}");
     }
 
     results
 }
 
-fn task1() -> () {}
+fn task1(lines: Vec<String>) -> () {
+    let circuit = set_circuit(lines);
+    let res = read_circuit(&circuit);
+
+    println!("{:?}\n", res["a"]);
+}
 
 fn task2() -> () {}
