@@ -1,23 +1,30 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fs};
 
 const INPUT_PATH: &str = "src/inputs/d07.txt";
 
+#[derive(Debug)]
+struct Output {
+    wires: Vec<String>,
+    operation: String,
+}
+
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use std::{collections::HashMap, fs};
 
+    use crate::{get_circuit, get_lines, solve_full};
     const INPUT_TEST: &str = "src/inputs/test_d07.txt";
 
     #[test]
     fn test_sample_circuit() {
-        let lines: Vec<String> = std::fs::read_to_string(INPUT_TEST)
-            .expect("cargo should be run from root")
-            .lines()
-            .map(String::from)
-            .collect();
-
-        let circuit = set_circuit(lines);
-        let res = read_circuit(&circuit);
+        let file: String = fs::read_to_string(INPUT_TEST).unwrap();
+        let lines = get_lines(&file);
+        let circuit = get_circuit(lines);
+        let mut res: HashMap<String, u16> = HashMap::new();
+        for (key, output) in &circuit {
+            let signal = solve_full(&circuit, &mut res, key, output);
+            res.entry(key.to_string()).or_insert(signal);
+        }
 
         assert_eq!(res["d"], 72);
         assert_eq!(res["e"], 507);
@@ -30,118 +37,157 @@ mod tests {
     }
 }
 
-fn main() {
-    let lines: Vec<String> = std::fs::read_to_string(INPUT_PATH)
-        .expect("cargo should be run from root")
+fn get_lines(file: &String) -> Vec<Vec<&str>> {
+    let mut lines: Vec<Vec<&str>> = file
         .lines()
-        .map(String::from)
+        .map(|f| f.split_whitespace().collect())
         .collect();
 
-    task1(lines);
-    // task2();
+    lines.sort_by(|a, b| (a.len()).cmp(&b.len()));
+    lines
 }
 
-// runs until beginning of circuit to get u16 value
-fn run_backwards(
-    circuit: &HashMap<String, Vec<String>>,
-    results: &mut HashMap<String, u16>,
-    sender: &str,
-) -> u16 {
-    let msg = results.get(sender);
-    if msg != None {
-        let signal = msg.unwrap().clone();
-        println!("known value for {sender}: {:?}", signal);
-        return signal;
-    }
+fn get_circuit(lines: Vec<Vec<&str>>) -> HashMap<String, Output> {
+    let mut circuit: HashMap<String, Output> = HashMap::new();
+    for line in &lines {
+        let mut wires: Vec<String> = Vec::new();
+        let mut key: String = String::from("");
+        let mut value: Output = Output {
+            wires,
+            operation: String::from(""),
+        };
 
-    // sender is either &str or number
-    let mut value = sender.parse::<u16>();
-    println!("got {:?} from {:?}", value, sender);
-    let mut last = sender;
-    let mut cur = sender;
-    while value.is_err() {
-        last = cur;
-        if circuit[last].len() == 2 {
-            cur = circuit[last][1].as_str();
-        } else {
-            cur = circuit[last][0].as_str();
+        match line.len() {
+            // complex operation
+            5 => {
+                wires = vec![line[0].to_string(), line[2].to_string()];
+                key = line[4].to_string();
+                value = Output {
+                    wires,
+                    operation: String::from(line[1]),
+                };
+            }
+            // NOT operation
+            4 => {
+                wires = vec![line[1].to_string()];
+                key = line[3].to_string();
+                value = Output {
+                    wires,
+                    operation: String::from(line[0]),
+                };
+            }
+            // "assignment"
+            3 => {
+                wires = vec![line[0].to_string()];
+                key = line[2].to_string();
+                value = Output {
+                    wires,
+                    operation: String::from("ASSIGN"),
+                };
+            }
+            _ => {}
         }
-        value = cur.parse::<u16>();
-        println!("looked back, got {:?} from {:?}", value, cur);
-    }
 
-    let signal = value.unwrap();
-    if last.parse::<u16>().is_err() {
-        println!("saving {last} with {signal}");
-        results.entry(last.to_string()).or_insert(signal);
-    }
-    return signal;
-}
-
-fn set_circuit(lines: Vec<String>) -> HashMap<String, Vec<String>> {
-    let mut circuit: HashMap<String, Vec<String>> = HashMap::new();
-
-    for line in lines {
-        let mut split: Vec<String> = line.split_whitespace().map(|f| f.to_string()).collect();
-
-        let receiver = split.pop().expect("should always have receiver");
-        split.pop().unwrap(); // disconsider '->'
-        let sender = split[..].to_vec();
-
-        circuit.entry(receiver.to_string()).or_insert(sender);
+        circuit.insert(key, value);
     }
 
     circuit
 }
 
-fn read_circuit(circuit: &HashMap<String, Vec<String>>) -> HashMap<String, u16> {
-    let mut results: HashMap<String, u16> = HashMap::new();
-
-    for (receiver, sender) in circuit {
-        println!("{:?} receives {:?}", receiver, sender);
-        let mut msg: u16 = 0;
-
-        if results.get(receiver) != None {
-            msg = results.get(receiver).unwrap().clone();
-            println!("receiver ({:?}) is known already as {:?}", receiver, msg);
-            continue;
-        }
-
-        match sender.len() {
-            3 => {
-                let first = run_backwards(circuit, &mut results, sender[0].as_str());
-                let second = run_backwards(circuit, &mut results, sender[2].as_str());
-
-                msg = match sender[1].as_str() {
-                    "AND" => first & second,
-                    "OR" => first | second,
-                    "RSHIFT" => first >> second,
-                    "LSHIFT" => first << second,
-                    _ => 0 as u16,
-                }
-            }
-            // NOT
-            2 => {
-                msg = !run_backwards(circuit, &mut results, sender[1].as_str());
-            }
-            // just a value assignment
-            1 => {
-                msg = run_backwards(circuit, &mut results, sender[0].as_str());
-            }
-            _ => {}
-        }
-        results.entry(receiver.to_string()).or_insert(msg);
-        println!("READ: saving {receiver} with {msg}");
+fn solve_full(
+    cir: &HashMap<String, Output>,
+    res: &mut HashMap<String, u16>,
+    key: &String,
+    output: &Output,
+) -> u16 {
+    println!("{key}, {:?}", output);
+    let fast_track = res.get(key);
+    if fast_track.is_some() {
+        println!("fastracked {key}");
+        return fast_track.unwrap().clone();
     }
+    let operation = &output.operation;
+    let first: u16;
+    let mut second: u16 = 0;
 
-    results
+    first = solve_single(cir, res, key, &output.wires[0], operation);
+    if output.wires.len() == 2 {
+        second = solve_single(cir, res, key, &output.wires[1], operation);
+    }
+    // have to solve twice and match with operation
+    let number = match operation.as_str() {
+        "AND" => first & second,
+        "OR" => first | second,
+        "LSHIFT" => first << second,
+        "RSHIFT" => first >> second,
+        "NOT" => !first,
+        "ASSIGN" => first,
+        _ => 0u16,
+    };
+
+    println!("solved! {key}={number} using {operation}, on {first} and {second}");
+    res.entry(key.to_string()).or_insert(number);
+    return number;
 }
 
-fn task1(lines: Vec<String>) -> () {
-    let circuit = set_circuit(lines);
-    let res = read_circuit(&circuit);
-
-    println!("{:?}\n", res["a"]);
+fn solve_single(
+    cir: &HashMap<String, Output>,
+    res: &mut HashMap<String, u16>,
+    key: &String,
+    single: &String,
+    operation: &String,
+) -> u16 {
+    let fast_track = res.get(single);
+    if fast_track.is_some() {
+        println!("fastracked {single}");
+        return fast_track.unwrap().clone();
+    }
+    let solve = single.parse::<u16>();
+    if solve.is_ok() {
+        let number = solve.unwrap();
+        return number;
+    } else {
+        let (key, output) = cir.get_key_value(single).unwrap();
+        return solve_full(cir, res, key, output);
+    }
 }
 
-fn task2() -> () {}
+fn main() {
+    task1();
+    task2();
+}
+
+fn task1() -> () {
+    let file: String = fs::read_to_string(INPUT_PATH).unwrap();
+    let mut lines = get_lines(&file);
+    lines.sort_by(|a, b| (a.len()).cmp(&b.len()));
+
+    let circuit = get_circuit(lines);
+    let mut res: HashMap<String, u16> = HashMap::new();
+    for (key, output) in &circuit {
+        let signal = solve_full(&circuit, &mut res, key, output);
+        res.entry(key.to_string()).or_insert(signal);
+    }
+    println!("\n{:?}", res.get("a").unwrap());
+}
+
+fn task2() -> () {
+    let file: String = fs::read_to_string(INPUT_PATH).unwrap();
+    let mut lines = get_lines(&file);
+    lines.sort_by(|a, b| (a.len()).cmp(&b.len()));
+
+    let mut circuit = get_circuit(lines);
+    let overwrite = Output {
+        wires: vec![46065u16.to_string()],
+        operation: "ASSIGN".to_string()
+    };
+
+    circuit.insert("b".to_string(), overwrite);
+
+    let mut res: HashMap<String, u16> = HashMap::new();
+    for (key, output) in &circuit {
+        let signal = solve_full(&circuit, &mut res, key, output);
+        res.entry(key.to_string()).or_insert(signal);
+    }
+    println!("\n{:?}", res.get("a").unwrap());
+}
