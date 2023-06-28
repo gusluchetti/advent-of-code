@@ -26,10 +26,7 @@ pub fn parse_input(path: &str, method: Method) -> Vec<String> {
             lines
         },
         Method::NewLine => {
-            for line in text.lines() {
-                lines.push(String::from(line));
-            }
-            lines
+            text.lines().map(|f| f.to_string()).collect::<Vec<String>>()
         },
         Method::Other(char) => {
             let splitter = char.to_string();
