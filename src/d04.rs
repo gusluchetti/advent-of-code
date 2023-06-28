@@ -1,4 +1,5 @@
-use advent_of_code_2015::utils::{parse_input, Method};
+use std::fs;
+
 use md5;
 use md5::Digest;
 
@@ -51,20 +52,19 @@ pub fn find_lowest_number(secret: &str, num_zeroes: u8) -> u32 {
 }
 
 fn main() {
-    task1();
-    task2();
+    let input = fs::read_to_string(INPUT_PATH).expect("should have file");
+    task1(&input);
+    task2(&input);
 }
 
-fn task1() {
-    let input = parse_input(INPUT_PATH, Method::OneString);
-    let secret: &str = input[0].trim();
+fn task1(input: &String) {
+    let secret: &str = input.trim();
     let lowest = find_lowest_number(secret, 5);
     println!("lowest number w/ 5 leading zeros is: {lowest}");
 }
 
-fn task2() {
-    let input = parse_input(INPUT_PATH, Method::OneString);
-    let secret: &str = input[0].trim();
+fn task2(input: &String) {
+    let secret: &str = input.trim();
     let lowest = find_lowest_number(secret, 6);
     println!("lowest number w/ 6 leading zeros is: {lowest}");
 }

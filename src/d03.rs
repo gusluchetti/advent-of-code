@@ -1,5 +1,4 @@
-use advent_of_code_2015::utils::{parse_input, Method};
-use std::collections::HashMap;
+use std::{collections::HashMap, fs};
 
 const INPUT_PATH: &str = "src/inputs/d03.txt";
 
@@ -9,8 +8,8 @@ fn main() {
 }
 
 fn task1() {
-    let input = parse_input(INPUT_PATH, Method::OneString);
-    let directions: String = String::from(&input[0]);
+    let input: String = fs::read_to_string(INPUT_PATH).expect("should have input");
+    let directions = input.clone();
     let mut known: HashMap<String, u32> = HashMap::from([("0,0".to_string(), 1)]);
 
     let mut x = 0;
@@ -42,9 +41,9 @@ fn task1() {
 }
 
 fn task2() {
-    let input = parse_input(INPUT_PATH, Method::OneString);
-    let directions: String = String::from(&input[0]);
-    let mut known: HashMap<String, u32> = HashMap::from([("0,0".to_string(), 2)]);
+    let input: String = fs::read_to_string(INPUT_PATH).expect("should have input");
+    let directions = input.clone();
+    let mut known: HashMap<String, u32> = HashMap::from([("0,0".to_string(), 1)]);
 
     // santas coords
     let mut x1 = 0;

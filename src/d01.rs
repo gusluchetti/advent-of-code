@@ -1,17 +1,14 @@
-use advent_of_code_2015::utils::{parse_input, Method};
-
 const INPUT_PATH: &str = "src/inputs/d01.txt";
 
 fn main() {
-    task1();
-    task2();
+    let input = std::fs::read_to_string(INPUT_PATH).expect("should have input");
+    task1(&input);
+    task2(&input);
 }
 
-fn task1() -> () {
-    let input = parse_input(INPUT_PATH, Method::OneString);
-
+fn task1(input: &String) {
     let mut counter = 0;
-    for inst in input[0].chars() {
+    for inst in input.chars() {
         if inst == '(' {
             counter = counter + 1;
         } else if inst == ')' {
@@ -21,11 +18,9 @@ fn task1() -> () {
     println!("final floor: {}", counter);
 }
 
-fn task2() -> () {
-    let input = parse_input(INPUT_PATH, Method::OneString);
-
+fn task2(input: &String) {
     let mut counter = 0;
-    for (i, inst) in input[0].chars().enumerate() {
+    for (i, inst) in input.chars().enumerate() {
         if inst == '(' {
             counter = counter + 1;
         } else if inst == ')' {

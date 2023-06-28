@@ -1,10 +1,10 @@
-use advent_of_code_2015::utils::{parse_input, Method};
-use std::vec;
+use std::{vec, fs};
 
 const INPUT_PATH: &str = "src/inputs/d06.txt";
 
 fn main() {
-    let lines: Vec<String> = parse_input(INPUT_PATH, Method::NewLine);
+    let file = fs::read_to_string(INPUT_PATH).expect("should have file");
+    let lines: Vec<String> = file.lines().map(|f| f.to_string()).collect();
     let instructions = parse_instructions(lines);
 
     task1(&instructions);

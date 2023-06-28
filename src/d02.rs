@@ -1,4 +1,4 @@
-use advent_of_code_2015::utils::{parse_input, Method};
+use std::fs;
 
 const INPUT_PATH: &str = "src/inputs/d02.txt";
 
@@ -36,14 +36,15 @@ impl Size {
 }
 
 fn main() {
-    task1();
-    task2();
+    let file: String = fs::read_to_string(INPUT_PATH).expect("should have input");
+    task1(&file);
+    task2(&file);
 }
 
-fn task1() -> () {
-    let input = parse_input(INPUT_PATH, Method::NewLine);
-
+fn task1(file: &String) -> () {
+    let input: Vec<&str> = file.lines().collect();
     let mut total_paper = 0;
+
     for n in input {
         let split: Vec<&str> = n.split_terminator('x').collect();
         if split.len() == 3 {
@@ -63,10 +64,10 @@ fn task1() -> () {
     println!("TOTAL paper needed: {}", total_paper);
 }
 
-fn task2() -> () {
-    let input = parse_input(INPUT_PATH, Method::NewLine);
-
+fn task2(file: &String) -> () {
+    let input: Vec<&str> = file.lines().collect();
     let mut total_ribbon = 0;
+
     for n in input {
         let split: Vec<&str> = n.split_terminator('x').collect();
         if split.len() == 3 {

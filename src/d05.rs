@@ -1,5 +1,4 @@
-use advent_of_code_2015::utils::{parse_input, Method};
-use std::collections::HashMap;
+use std::{collections::HashMap, fs};
 
 const INPUT_PATH: &str = "src/inputs/d05.txt";
 
@@ -45,11 +44,11 @@ mod tests {
 }
 
 fn main() {
-    task1();
-    task2();
+    let file_string = fs::read_to_string(INPUT_PATH).expect("should have file");
+    let lines: Vec<&str> = file_string.lines().collect();
+    task1(&lines);
+    task2(&lines);
 }
-
-///
 
 fn twice_row_char(string: &str) -> bool {
     let mut characters = string.chars();
@@ -102,12 +101,10 @@ fn is_nice_string(string: &str) -> bool {
     }
 }
 
-fn task1() -> () {
-    let input = parse_input(INPUT_PATH, Method::NewLine);
+fn task1(lines: &Vec<&str>) -> () {
     let mut nice_strings: u32 = 0;
-
-    for line in input {
-        if is_nice_string(line.as_str()) {
+    for line in lines {
+        if is_nice_string(line) {
             nice_strings = nice_strings + 1;
         }
     }
@@ -153,13 +150,12 @@ fn is_nicest_string(string: &str) -> bool {
     }
 }
 
-fn task2() -> () {
-    let input = parse_input(INPUT_PATH, Method::NewLine);
+fn task2(lines: &Vec<&str>) -> () {
     let mut counter = 1;
     let mut nice_strings: u32 = 0;
 
-    for line in input {
-        if is_nicest_string(line.as_str()) {
+    for line in lines {
+        if is_nicest_string(line) {
             println!("{line} is nice!");
             nice_strings = nice_strings + 1;
         } else {
