@@ -110,9 +110,9 @@ fn solve_full(
     let first: u16;
     let mut second: u16 = 0;
 
-    first = solve_single(cir, res, key, &output.wires[0], operation);
+    first = solve_single(cir, res, &output.wires[0]);
     if output.wires.len() == 2 {
-        second = solve_single(cir, res, key, &output.wires[1], operation);
+        second = solve_single(cir, res, &output.wires[1]);
     }
     // have to solve twice and match with operation
     let number = match operation.as_str() {
@@ -133,9 +133,7 @@ fn solve_full(
 fn solve_single(
     cir: &HashMap<String, Output>,
     res: &mut HashMap<String, u16>,
-    key: &String,
     single: &String,
-    operation: &String,
 ) -> u16 {
     let fast_track = res.get(single);
     if fast_track.is_some() {
@@ -168,7 +166,7 @@ fn task1() -> () {
         let signal = solve_full(&circuit, &mut res, key, output);
         res.entry(key.to_string()).or_insert(signal);
     }
-    println!("\n{:?}", res.get("a").unwrap());
+    println!("\n wire (a) equals {:?}", res.get("a").unwrap());
 }
 
 fn task2() -> () {
@@ -179,7 +177,7 @@ fn task2() -> () {
     let mut circuit = get_circuit(lines);
     let overwrite = Output {
         wires: vec![46065u16.to_string()],
-        operation: "ASSIGN".to_string()
+        operation: "ASSIGN".to_string(),
     };
 
     circuit.insert("b".to_string(), overwrite);
@@ -189,5 +187,8 @@ fn task2() -> () {
         let signal = solve_full(&circuit, &mut res, key, output);
         res.entry(key.to_string()).or_insert(signal);
     }
-    println!("\n{:?}", res.get("a").unwrap());
+    println!(
+        "\n wire (a), after ovewrite, equals {:?}",
+        res.get("a").unwrap()
+    );
 }
