@@ -9,11 +9,23 @@ print(file)
 local directions = { 1, 2, 3, 4 }
 local dir_index = 1;
 
-local plane = {};
-plane.x = 0
-plane.y = 0
-visited = {}
-table.insert(visited, { x = 0, y = 0 })
+local plane = { x = 0, y = 0 };
+
+local visited = {}
+visited["0,0"] = 0
+
+local first = false
+local first_dist = 0;
+function visited_contains(key)
+    if visited[key] ~= nil then
+        if first == false then
+            print('intersection: ', key)
+            pp.dump(visited)
+            first_dist = visited[key]
+            first = true
+        end
+    end
+end
 
 for inst in string.gmatch(file, "[R,L]%d+") do
     print()
@@ -37,43 +49,40 @@ for inst in string.gmatch(file, "[R,L]%d+") do
     print('start', plane.x, plane.y)
     if dir_index == 1 then
         for i = 1, number do
-            local item = { x = plane.x, y = plane.y + i }
-            if table[item] ~= nil then
-                print('intersection: ', item)
-            end
-            table.insert(visited, item)
+            local key = string.format("%d,%d", plane.x, plane.y + i)
+            visited_contains(key)
+            local sum = math.abs(plane.x) + math.abs(plane.y + i)
+            visited[key] = sum
         end
         plane.y = plane.y + number
     elseif dir_index == 2 then
         for i = 1, number do
-            local item = { x = plane.x + i, y = plane.y }
-            if table[item] ~= nil then
-                print('intersection: ', item)
-            end
-            table.insert(visited, item)
+            local key = string.format("%d,%d", plane.x + i, plane.y)
+            visited_contains(key)
+            local sum = math.abs(plane.x + i) + math.abs(plane.y)
+            visited[key] = sum
         end
         plane.x = plane.x + number
     elseif dir_index == 3 then
         for i = 1, number do
-            local item = { x = plane.x, y = plane.y - i }
-            if table[item] ~= nil then
-                print('intersection: ', item)
-            end
-            table.insert(visited, item)
+            local key = string.format("%d,%d", plane.x, plane.y - i)
+            visited_contains(key)
+            local sum = math.abs(plane.x) + math.abs(plane.y - i)
+            visited[key] = sum
         end
         plane.y = plane.y - number
     elseif dir_index == 4 then
         for i = 1, number do
-            local item = { x = plane.x - i, y = plane.y }
-            if table[item] ~= nil then
-                print('intersection: ', item)
-            end
-            table.insert(visited, item)
+            local key = string.format("%d,%d", plane.x - i, plane.y)
+            visited_contains(key)
+            local sum = math.abs(plane.x - i) + math.abs(plane.y)
+            visited[key] = sum
         end
         plane.x = plane.x - number
     end
     print('end', plane.x, plane.y)
 end
 
-pp.dump(visited)
-print(math.abs(plane.x) + math.abs(plane.y))
+local distance = math.abs(plane.x) + math.abs(plane.y)
+print(distance)   -- part 1
+print(first_dist) -- part 2
