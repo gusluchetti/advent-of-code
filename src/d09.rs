@@ -5,11 +5,6 @@ use itertools::Itertools;
 const INPUT_PATH: &str = "src/inputs/d09.txt";
 
 fn main() {
-    let test_input: String = "London to Dublin = 464
-London to Belfast = 518
-Dublin to Belfast = 141"
-        .to_string();
-
     let input = std::fs::read_to_string(INPUT_PATH).expect("should have input");
     let lines = input.lines().collect::<Vec<&str>>();
 
