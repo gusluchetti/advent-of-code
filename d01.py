@@ -1,3 +1,4 @@
+import time
 import regex as re
 
 search_terms = {
@@ -29,7 +30,6 @@ def get_line_nums(line, include_written_nums = False):
         else: 
             digits.append(int(m))
 
-    print('retrieved: {} -> {}'.format(match, digits))
     return digits
 
 def main():
@@ -39,22 +39,21 @@ def main():
     ext_sum = 0
     for line in file:
         line = line.strip()
-        print(line)
 
         basic = get_line_nums(line)
         ext = get_line_nums(line, True)
 
         new_b = int("{}{}".format(basic[0], basic[-1]))
         new_e = int("{}{}".format(ext[0], ext[-1]))
-        print('basic: {} + {} = {}'.format(basic_sum, new_b, basic_sum + new_b))
-        print('extended: {} + {} = {}'.format(ext_sum, new_e, ext_sum + new_e))
         basic_sum += new_b
         ext_sum += new_e
-        print()
 
-    print(basic_sum, ext_sum)
+    return (basic_sum, ext_sum)
 
 
 if __name__ == "__main__":
-    main()
-    pass
+    t = time.perf_counter_ns()
+    (basic_sum, ext_sum) = main()
+    elapsed = time.perf_counter_ns() - t
+    print(basic_sum, ext_sum)
+    print('elapsed: {}s'.format(elapsed/1000000000))
