@@ -1,5 +1,6 @@
 import time
 import regex as re
+from pathlib import Path
 
 search_terms = {
   'one': 1,
@@ -33,7 +34,8 @@ def get_line_nums(line, include_written_nums = False):
     return digits
 
 def main():
-    file = open("./inputs/d01.txt", "r", encoding="utf-8")
+    input = Path(__file__).parent / '../inputs/d01.txt'
+    file = open(input, "r", encoding="utf-8")
     # file = open("./inputs/test_d01.txt", "r", encoding="utf-8")
     basic_sum = 0
     ext_sum = 0
