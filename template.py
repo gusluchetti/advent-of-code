@@ -1,17 +1,19 @@
-from io import TextIOWrapper
 from pathlib import Path
 import time
 
-def part1(file: TextIOWrapper):
+def part1(file):
     for line in file:
         print(line)
     return 0
 
-def part2(file: TextIOWrapper):
+def part2(file):
+    for line in file:
+        print(line)
     return 0
 
 def main():
     input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
+    # input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
     file = open(input, "r", encoding="utf-8")
 
     p1 = part1(file)

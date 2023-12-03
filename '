@@ -59,6 +59,7 @@ def part2(schematic: list[str]):
         print(line)
         spans = []
         for r in re.finditer(r'\d+', line):
+            print(r)
             num: int = int(r[0])
             spans = r.spans() if r else [] 
             for span in spans:
@@ -87,14 +88,14 @@ def part2(schematic: list[str]):
     for gear in gears:
         pos = adj.get(gear)
         if pos and len(pos) == 2: 
-            print(f'gear w/ numbers {pos}')
+            print(f'geat w/ numbers {pos}')
             sum += pos[0] * pos[1]
 
     return sum
 
 def main():
     input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
-    # input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
+    input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
     file = open(input, "r", encoding="utf-8")
 
     for line in file:
