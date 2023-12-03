@@ -98,4 +98,3 @@ Game 97: 1 red, 9 blue, 8 green; 2 green, 6 blue, 1 red; 6 green, 1 blue
 Game 98: 9 blue, 7 green, 8 red; 6 red, 11 blue, 4 green; 11 green, 9 blue, 15 red; 11 red, 6 blue, 16 green
 Game 99: 2 blue, 1 red, 9 green; 8 red, 1 blue, 1 green; 2 red, 7 green, 8 blue; 1 red, 5 green, 7 blue; 7 blue, 10 green, 9 red; 1 green, 1 blue, 1 red
 Game 100: 3 blue, 6 red, 9 green; 4 red, 3 green; 4 green, 16 red, 1 blue; 14 blue, 1 green
-

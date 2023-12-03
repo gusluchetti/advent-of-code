@@ -3,12 +3,54 @@ from pathlib import Path
 import time
 
 def part1(file: TextIOWrapper):
-    for line in file:
-        print(line)
-    return 0
+    sum = 0
+    amount, color = 0, ""
+    for i, line in enumerate(file):
+        valid_game = True
+        sets = line.split(':')[1].split(';')
+        print(f'\nid: {i+1}')
+
+        for j, set in enumerate(sets):
+            rgb = { 'red': 12, 'green': 13, 'blue': 14 }
+            print(f'set {j}')
+
+            for a in set.split(','):
+                a = a.strip().split(' ')
+                amount, color = int(a[0]), a[1]
+                print(amount, color)
+                rgb[color] -= amount
+                if rgb[color] < 0:
+                    valid_game = False
+                    print(f'game w/ id {i} is invalid!')
+                    break;
+
+        if valid_game:
+            sum += i+1
+            print(f'cur sum: {sum}')
+
+    return sum
 
 def part2(file: TextIOWrapper):
-    return 0
+    sum = 0
+    amount, color = 0, ""
+    for i, line in enumerate(file):
+        min = { 'red': 0, 'green': 0, 'blue': 0 }
+        sets = line.split(':')[1].split(';')
+        print(f'\nid: {i+1}')
+
+        for j, set in enumerate(sets):
+            print(f'set {j}')
+            for a in set.split(','):
+                a = a.strip().split(' ')
+                amount, color = int(a[0]), a[1]
+                if amount > min[color]:
+                    print(f'fewest {color} balls needed is {amount}')
+                    min[color] = amount
+
+        sum += (min['red'] * min['green'] * min['blue']) 
+        print(f'cur sum: {sum}')
+
+    return sum
 
 def main():
     input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
