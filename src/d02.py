@@ -1,4 +1,5 @@
 from pathlib import Path
+from functools import reduce
 import time
 
 def part1(file):
@@ -19,12 +20,10 @@ def part1(file):
                 if rgb[color] < 0:
                     valid_game = False
                     break;
-
             if not valid_game:
                 break;
 
-        if valid_game:
-            sum += i+1
+        if valid_game: sum += i+1
 
     return sum
 
@@ -35,14 +34,14 @@ def part2(file):
         min = { 'red': 0, 'green': 0, 'blue': 0 }
         sets = line.split(':')[1].split(';')
 
-        for j, set in enumerate(sets):
+        for _, set in enumerate(sets):
             for a in set.split(','):
                 a = a.strip().split(' ')
                 amount, color = int(a[0]), a[1]
                 if amount > min[color]:
                     min[color] = amount
 
-        sum += (min['red'] * min['green'] * min['blue']) 
+        sum += reduce(lambda x, y: x * y, min.values())  
 
     return sum
 
