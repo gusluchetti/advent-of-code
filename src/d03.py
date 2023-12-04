@@ -8,18 +8,15 @@ def part1(schematic: list[str]):
     symbols: list[tuple[int, int]] = []
     width = len(schematic[0]) 
     height = len(schematic)
-    print(f'\ninfo = w: {width}, h: {height}')
 
     for i, line in enumerate(schematic):
         for j, char in enumerate(line):
             if (char.isdigit() == False and char != "."):
                 symbols.append((i, j))
-    print(f'symbols positions: {symbols}')
 
     filtered: list[tuple[int, int]] = []
     sum = 0
     for i, line in enumerate(schematic):
-        print(line)
         spans = []
 
         for r in re.finditer(r'\d+', line):
@@ -43,20 +40,14 @@ def part1(schematic: list[str]):
 
 def part2(schematic: list[str]):
     gears = []
-    width = len(schematic[0]) 
-    height = len(schematic)
-    print(f'\ninfo = w: {width}, h: {height}')
-
     for i, line in enumerate(schematic):
         for j, char in enumerate(line):
             if (char == "*"):
                 gears.append((i, j))
-    print(f'gears positions: {gears}')
 
     sum = 0
     adj: dict[tuple, list[int]] = {}
     for i, line in enumerate(schematic):
-        print(line)
         spans = []
         for r in re.finditer(r'\d+', line):
             num: int = int(r[0])
@@ -87,7 +78,6 @@ def part2(schematic: list[str]):
     for gear in gears:
         pos = adj.get(gear)
         if pos and len(pos) == 2: 
-            print(f'gear w/ numbers {pos}')
             sum += pos[0] * pos[1]
 
     return sum

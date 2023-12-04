@@ -6,7 +6,6 @@ def part1(file):
     sum = 0
     amount, color = 0, ""
     for i, line in enumerate(file):
-        print(line)
         valid_game = True
         sets = line.split(':')[1].split(';')
 
