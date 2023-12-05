@@ -51,7 +51,7 @@ def part2(file):
                 else:
                     diff = 0
 
-            print(f'seed {s} on map {idx} | diff = {diff} -> {next}')
+            print(f'{diff:+} -> {next}')
 
         finals.append(next)
         print(f'seed {s} finalized at {next}')
@@ -60,7 +60,7 @@ def part2(file):
 
 def main():
     input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
-    # input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
+    input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
 
     file = open(input, "r", encoding="utf-8")
     p1 = part1(file)
