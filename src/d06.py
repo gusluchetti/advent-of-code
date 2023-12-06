@@ -34,25 +34,25 @@ def part2(lines):
     distances = [int(''.join(lines[1].split()[1:]))]
     length = len(times)
 
-    winning_ways: list[int] = []
+    s1, s2 = 0, 0
     for hold in range(0, length):
-        win, has_won = 0, False
         time, distance = times[hold], distances[hold]
         print(time, distance)
 
-        hold_values = range(1, time)
-        print(hold_values)
-        for hold in hold_values:
-            new_dist = hold * (time - hold)
-            if new_dist > distance:
-                win += 1
-                has_won = True
-            else:
-                if has_won: break
-        winning_ways.append(win)
+        # quadratic formula
+        # 1*h^2 + -h*d - d = 0
+        a, b, c = 1, -time, distance
+        delta = b**2-(4*a*c)
+        print(a, b, c)
+        print(delta)
 
-    print(f'can win in {winning_ways} ways')
-    return math.prod(winning_ways)
+        if delta > 0:
+            root = math.sqrt(delta)
+            s1 = math.floor((-b + root)/2*a)
+            s2 = math.floor((-b - root)/2*a)
+            print(s1 - s2)
+
+    return s1 - s2
 
 def main():
     input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
