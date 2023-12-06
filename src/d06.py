@@ -32,28 +32,26 @@ def part1(lines):
 def part2(lines):
     times = [int(''.join(lines[0].split()[1:]))]
     distances = [int(''.join(lines[1].split()[1:]))]
-    print(times, distances)
     length = len(times)
 
     winning_ways: list[int] = []
-    for i in range(0, length):
+    for hold in range(0, length):
         win, has_won = 0, False
-        time, distance = times[i], distances[i]
+        time, distance = times[hold], distances[hold]
         print(time, distance)
 
-        for i in range(1, time):
-            remainder = time - i 
-            new_dist = i * remainder
+        hold_values = range(1, time)
+        print(hold_values)
+        for hold in hold_values:
+            new_dist = hold * (time - hold)
             if new_dist > distance:
                 win += 1
                 has_won = True
             else:
                 if has_won: break
-
-        print(f'can win in {win} ways')
         winning_ways.append(win)
 
-    print(winning_ways)
+    print(f'can win in {winning_ways} ways')
     return math.prod(winning_ways)
 
 def main():
