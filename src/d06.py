@@ -40,11 +40,14 @@ def part2(lines):
         print(time, distance)
 
         # quadratic formula
-        # 1*h^2 + -h*d - d = 0
+        # (7-1)*(1) = 7 - 1 = 6
+        # (7-3)*(3) = 21 - 9 = 12
+        # (7-6)*(6) = 42 - 36 = 12
+        # (time-x)*(x) => time*x - x^2 = distance
+
+        # (1)*x^2 + (-time)*x + (distance) = 0
         a, b, c = 1, -time, distance
         delta = b**2-(4*a*c)
-        print(a, b, c)
-        print(delta)
 
         if delta > 0:
             root = math.sqrt(delta)
