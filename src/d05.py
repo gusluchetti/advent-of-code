@@ -3,60 +3,77 @@ from pathlib import Path
 import time
 
 def part1(file: TextIOWrapper):
-    values = file.read().split('\n\n')
-    seeds = [int(x) for x in values[0].split()[1:]]
-    finals: list[int] = [] # in this case, locations
+    seeds, *maps = file.read().split('\n\n')
+    seeds = [int(x) for x in seeds.split()[1:]]
 
-    for s in seeds:
-        print(f'\nseed: {s}')
-        next, _ = s, s
-        for idx, map in enumerate(values[1:]):
-            info, diff = map.split(), 0
+    ranges = []
+    for m in maps:
+        r = []
+        for line in m.splitlines()[1:]:
+            r.append(list(map(int, line.split())))
+        ranges.append(r)
 
-            for i in range(2,len(info)-1, 3):
-                dest, source, range_len = int(info[i]), int(info[i+1]), int(info[i+2]) 
-                diff = source - dest
-                _ = next
-                if next >= source and next <= source + range_len - 1:
-                    next = next - diff
+    min_location = float("inf")
+    for seed in seeds:
+        mappings = [seed]
+        for r in ranges:
+            for dest, source, length in r:
+                length -= 1 
+                if mappings[-1] in range(source, source+length+1):
+                    diff = source - dest
+                    mappings.append(mappings[-1] - diff)
                     break
-                else:
-                    diff = 0
+            else:
+                mappings.append(mappings[-1])
 
-            print(f'seed {s} on map {idx} | diff = {diff} -> {next}')
+        if min_location > mappings[-1]: min_location = mappings[-1]
+        print(f'seed: {seed} | min: {min_location}')
 
-        finals.append(next)
-        print(f'seed {s} finalized at {next}')
-
-    return min(finals)
+    return min_location 
 
 def part2(file):
-    values = file.read().split('\n\n')
-    seeds = [int(x) for x in values[0].split()[1:]]
-    finals: list[int] = [] # in this case, locations
+    seeds, *maps = file.read().split('\n\n')
+    seed_ranges: list[range] = []
+    seeds = [int(x) for x in seeds.split()[1:]]
+    for i in range(0, len(seeds), 2):
+        seed_ranges.append(range(seeds[i], seeds[i]+seeds[i+1]))
 
-    for s in seeds:
-        print(f'\nseed: {s}')
-        next, _ = s, s
-        for idx, map in enumerate(values[1:]):
-            info, diff = map.split(), 0
+    line_ranges = []
+    for m in maps:
+        r = []
+        for line in m.splitlines()[1:]:
+            r.append(list(map(int, line.split())))
+        line_ranges.append(r)
 
-            for i in range(2,len(info)-1, 3):
-                dest, source, range_len = int(info[i]), int(info[i+1]), int(info[i+2]) 
+    min_location_ranges = []
+    while len(seed_ranges) > 0:
+        sr = seed_ranges.pop()
+        start, end = sr[0], sr[-1]
+        print(f'start: {start} | end: {end}')
+        for ranges in line_ranges:
+            for r in ranges:
+                dest, source, length = r[0], r[1], r[2]
                 diff = source - dest
-                _ = next
-                if next >= source and next <= source + range_len - 1:
-                    next = next - diff
+                print(f'{dest}, {source}, {length}')
+                ov_s = max(start, source)
+                ov_e = min(end, source+length)
+
+                if ov_s < ov_e:
+                    min_location_ranges.append(range(ov_s+diff, ov_e+diff))
+                    if ov_s > start:
+                        seed_ranges.append(range(start, ov_s))
+                    if ov_e > end:
+                        seed_ranges.append(range(end, ov_e))
                     break
-                else:
-                    diff = 0
+            else:
+                min_location_ranges.append(range(start, end))
 
-            print(f'{diff:+} -> {next}')
+            print(f'seed_ranges: {seed_ranges}')
+            print(f'min_location_ranges: {min_location_ranges}')
+            print()
 
-        finals.append(next)
-        print(f'seed {s} finalized at {next}')
-
-    return min(finals)
+    print(min_location_ranges)
+    return -1
 
 def main():
     input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
@@ -65,6 +82,7 @@ def main():
     file = open(input, "r", encoding="utf-8")
     p1 = part1(file)
 
+    print()
     file = open(input, "r", encoding="utf-8")
     p2 = part2(file)
 
