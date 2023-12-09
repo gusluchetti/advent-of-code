@@ -2,8 +2,30 @@ from pathlib import Path
 import time
 
 def part1(lines):
-    print(lines)
-    return -1
+    total = 0
+    for i, line in enumerate(lines):
+        line_diffs: list[list[int]] = []
+        line_diffs.append([int(x) for x in line.strip().split()])
+
+        while not all([x == 0 for x in line_diffs[-1]]):
+            diffs = []
+            last = line_diffs[-1]
+            for i in range(0, len(last)-1):
+                diff = abs(last[i] - last[i+1]) 
+                diffs.append(diff)
+            if len(diffs) > 0: line_diffs.append(diffs)
+            else: line_diffs.append([0])
+
+        print()
+        for l in line_diffs:
+            print(len(l), l)
+
+        line_diffs[-1].append(0)
+        new = sum([x[-1] for x in line_diffs])
+        print(total, new, total + new)
+        total += new
+
+    return total
 
 def part2(lines):
     print(lines)
@@ -17,6 +39,8 @@ def main():
     p1 = part1(file.readlines())
     # p2 = part2(file.readlines())
     return (p1, -1)
+
+    # not 1777441152
 
 if __name__ == "__main__":
     t = time.perf_counter_ns()
