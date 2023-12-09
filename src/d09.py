@@ -27,7 +27,7 @@ def part1(lines):
     return total
 
 def part2(lines):
-    total = 0
+    new = []
     for i, line in enumerate(lines):
         line_diffs: list[list[int]] = []
         line_diffs.append([int(x) for x in line.strip().split()])
@@ -41,23 +41,27 @@ def part2(lines):
             else: line_diffs.append([0])
 
         print()
-        for l in line_diffs:
-            print(len(l), l)
+        for i, l in enumerate(line_diffs):
+            print(i, l)
 
         line_diffs[-1].append(0)
-        new = sum([x[0] for x in line_diffs])
-        print(total, new, total + new)
-        total += new
+        n = line_diffs[i][0]
+        for i in reversed(range(1, len(line_diffs))):
+            n = line_diffs[i-1][0] - n
+        new.append(n)
+        print(new)
 
-    return total
+    return sum(new)
 
 def main():
     input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
-    input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
+    # input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
 
+    print('\npart 1')
     file = open(input, "r", encoding="utf-8")
     p1 = part1(file.readlines())
 
+    print('\npart 2')
     file = open(input, "r", encoding="utf-8")
     p2 = part2(file.readlines())
 
