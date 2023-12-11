@@ -54,6 +54,7 @@ def part1(lines):
             path.append(top_pos)
         else: 
             bad.append(path.pop(-1))
+            pass
 
         if any([a == 'S' for a in [top, right, bot, left]]) and len(path) != 3:
             cur = lines[y][x]
@@ -68,6 +69,7 @@ def part1(lines):
 
     print(f'\nfinished')
     print(path, len(path))
+    print(bad)
     longest = int((len(path) + 1) / 2)
     return longest
 
