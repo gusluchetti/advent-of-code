@@ -8,69 +8,68 @@ import time
 # 7 is a 90-degree bend connecting south and west.
 # F is a 90-degree bend connecting south and east.
 # . is ground; there is no pipe in this tile.
-# S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has.
 
 TOP = "|7F"
-RIGHT = "-J7"
 BOTTOM = "|JL"
+RIGHT = "-J7"
 LEFT = "-FL"
 
 def part1(lines):
     lines = [l.strip() for l in lines]
-    queue, seen = [], []
+    path = []
     grid_length = len(lines[0])
     start = (-1, -1)
 
     for y, l in enumerate(lines):
-        print(l)
         for x, s in enumerate(l): 
             if s == 'S': start = (y,x)
-    print(f'{start}')
 
-    seen.append((start))
-    queue.append((start, 0))
+    path.append(start)
+    count = 0
+    bad = []
+    while path.count(start) < 2:
+        count += 1
+        y, x = path[-1]
 
-    last = queue[0]
-    while len(queue) > 0:
-            q = queue.pop(0)
-            y, x = q[0]
-            distance = q[1]
+        top, right, bot, left = '.', '.', '.', '.'
+        if y-1 >= 0: top = lines[y-1][x]
+        if x+1 < grid_length: right = lines[y][x+1]
+        if y+1 < grid_length: bot = lines[y+1][x]
+        if x-1 >= 0: left = lines[y][x-1]
 
-            top, right, bot, left = '.', '.', '.', '.'
-            if y-1 >= 0: top = lines[y-1][x]
-            if x+1 < grid_length: right = lines[y][x+1]
-            if y+1 < grid_length: bot = lines[y+1][x]
-            if x-1 >= 0: left = lines[y][x-1]
+        top_pos = (y-1,x)
+        right_pos = (y,x+1)
+        bot_pos = (y+1,x)
+        left_pos = (y,x-1)
+        adj = [top_pos, right_pos, bot_pos, left_pos]
+        new = [a not in path and a not in bad for a in adj]
 
-            if distance <= 100:
-                print(f'at {q}')
-                print(top, right, bot, left)
+        if new[3] and LEFT.__contains__(left):
+            path.append(left_pos)
+        elif new[2] and BOTTOM.__contains__(bot):
+            path.append(bot_pos)
+        elif new[1] and RIGHT.__contains__(right):
+            path.append(right_pos)
+        elif new[0] and TOP.__contains__(top):
+            path.append(top_pos)
+        else: 
+            bad.append(path.pop(-1))
 
-            new = (-1, -1)
-            if TOP.__contains__(top):
-                new = (y-1,x)
-                if (new) not in seen:
-                    queue.append((new, distance+1))
-                    seen.append((new))
-            if RIGHT.__contains__(right):
-                new = (y,x+1)
-                if (new) not in seen:
-                    queue.append((new, distance+1))
-                    seen.append((new))
-            if BOTTOM.__contains__(bot):
-                new = (y+1,x)
-                if (new) not in seen:
-                    queue.append((new, distance+1))
-                    seen.append((new))
-            if LEFT.__contains__(left):
-                new = (y,x-1)
-                if (new) not in seen:
-                    queue.append((new, distance+1))
-                    seen.append((new))
+        if any([a == 'S' for a in [top, right, bot, left]]) and len(path) != 3:
+            cur = lines[y][x]
+            if top == 'S' and BOTTOM.__contains__(cur):
+                break
+            if right == 'S' and LEFT.__contains__(cur):
+                break
+            if bot == 'S' and TOP.__contains__(cur):
+                break
+            if left == 'S' and RIGHT.__contains__(cur):
+                break
 
-            last = q
-
-    return last[1]
+    print(f'\nfinished')
+    print(path, len(path))
+    longest = int((len(path) + 1) / 2)
+    return longest
 
 def part2(lines):
     print(lines)
