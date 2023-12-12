@@ -1,8 +1,35 @@
 from pathlib import Path
 import time
+import regex as re
+
 
 def part1(lines):
-    print(lines)
+    print('\n')
+    arrangements = 0
+    for line in lines:
+        print(f'\narrangements: {arrangements}')
+        split = line.split()
+        pattern, values = split[0], [int(s) for s in split[1].split(",")]
+        print(pattern, values)
+
+        length = len(pattern)
+        min_space = sum(values) + len(values) - 1
+        if min_space == length: 
+            arrangements += 1
+            continue
+
+        question_marks = re.finditer(r'\?', pattern)
+        hashes = re.finditer(r'\#', pattern)
+
+        for h in hashes:
+            print(h.span()[0])
+
+        for q in question_marks:
+            print(q.span()[0])
+
+        for v in values:
+            pass
+
     return -1
 
 def part2(lines):
