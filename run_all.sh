@@ -9,3 +9,6 @@ python src/d06.py
 python src/d07.py
 python src/d08.py
 python src/d09.py
+python src/d10.py
+python src/d11.py
+python src/d12.py
