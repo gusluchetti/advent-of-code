@@ -6,29 +6,35 @@ import regex as re
 def part1(lines):
     print('\n')
     arrangements = 0
-    for line in lines:
-        print(f'\narrangements: {arrangements}')
+    for idx, line in enumerate(lines):
         split = line.split()
         pattern, values = split[0], [int(s) for s in split[1].split(",")]
+        print(f'\narrangements after line {idx} : {arrangements}')
         print(pattern, values)
 
+        question_marks = [q.span()[0] for q in re.finditer(r'\?', pattern)]
+        hashes = [h.span()[0] for h in re.finditer(r'\#', pattern)] 
+        print(question_marks, hashes)
+
+        min_space = sum(values) + len(values) - 1 
         length = len(pattern)
-        min_space = sum(values) + len(values) - 1
         if min_space == length: 
             arrangements += 1
             continue
 
-        question_marks = re.finditer(r'\?', pattern)
-        hashes = re.finditer(r'\#', pattern)
+        spaces = [0]
+        for j in range(1, len(values)):
+            last = values[j-1]
+            spaces.append(last + 1 + spaces[-1])
+        print(spaces)
 
-        for h in hashes:
-            print(h.span()[0])
-
-        for q in question_marks:
-            print(q.span()[0])
-
-        for v in values:
-            pass
+        while len(values) > 0:
+            for i, p in enumerate(pattern):
+                print(i)
+                if p == "?":
+                    value = values.pop(0)
+                    start, end = max(0, i-1), min(len(pattern), i+value)
+                    print(value, start, end)
 
     return -1
 
