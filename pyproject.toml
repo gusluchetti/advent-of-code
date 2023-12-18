@@ -1,2 +1,17 @@
 [tool.isort]
 profile = "black"
+
+[tool.poetry]
+name = "advent-of-code-2023"
+version = "0.1.0"
+description = "aoc23 solutions using python"
+authors = ["Gustavo Luís Luchetti <gustavo@luchetti.dev>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
