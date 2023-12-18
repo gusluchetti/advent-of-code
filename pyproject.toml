@@ -10,6 +10,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+regex = "^2023.10.3"
 
 
 [build-system]
