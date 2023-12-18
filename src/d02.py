@@ -1,52 +1,56 @@
-from pathlib import Path
-from functools import reduce
 import time
+from functools import reduce
+from pathlib import Path
+
 
 def part1(file):
     sum = 0
     amount, color = 0, ""
     for i, line in enumerate(file):
         valid_game = True
-        sets = line.split(':')[1].split(';')
+        sets = line.split(":")[1].split(";")
 
         for set in sets:
-            rgb = { 'red': 12, 'green': 13, 'blue': 14 }
+            rgb = {"red": 12, "green": 13, "blue": 14}
 
-            for a in set.split(','):
-                a = a.strip().split(' ')
+            for a in set.split(","):
+                a = a.strip().split(" ")
                 amount, color = int(a[0]), a[1]
                 rgb[color] -= amount
                 if rgb[color] < 0:
                     valid_game = False
-                    break;
+                    break
             if not valid_game:
-                break;
+                break
 
-        if valid_game: sum += i+1
+        if valid_game:
+            sum += i + 1
 
     return sum
+
 
 def part2(file):
     sum = 0
     amount, color = 0, ""
     for line in file:
-        min = { 'red': 0, 'green': 0, 'blue': 0 }
-        sets = line.split(':')[1].split(';')
+        min = {"red": 0, "green": 0, "blue": 0}
+        sets = line.split(":")[1].split(";")
 
         for _, set in enumerate(sets):
-            for a in set.split(','):
-                a = a.strip().split(' ')
+            for a in set.split(","):
+                a = a.strip().split(" ")
                 amount, color = int(a[0]), a[1]
                 if amount > min[color]:
                     min[color] = amount
 
-        sum += reduce(lambda x, y: x * y, min.values())  
+        sum += reduce(lambda x, y: x * y, min.values())
 
     return sum
 
+
 def main():
-    input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
-    
+    input = Path(__file__).parent / f"../inputs/{Path(__file__).stem}.txt"
+
     file = open(input, "r", encoding="utf-8")
     p1 = part1(file)
 
@@ -54,9 +58,10 @@ def main():
     p2 = part2(file)
     return (p1, p2)
 
+
 if __name__ == "__main__":
     t = time.perf_counter_ns()
     (p1, p2) = main()
     elapsed = time.perf_counter_ns() - t
     print(p1, p2)
-    print('elapsed: {}s'.format(elapsed/1000000000))
+    print("elapsed: {}s".format(elapsed / 1000000000))

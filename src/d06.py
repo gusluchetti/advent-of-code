@@ -1,7 +1,8 @@
+import math
+import time
 from functools import reduce
 from pathlib import Path
-import time
-import math
+
 
 def part1(lines):
     times = [int(a) for a in lines[0].split()[1:]]
@@ -15,23 +16,25 @@ def part1(lines):
         print(time, distance)
 
         for i in range(1, time):
-            remainder = time - i 
+            remainder = time - i
             new_dist = i * remainder
             if new_dist > distance:
                 win += 1
                 has_won = True
             else:
-                if has_won: break
+                if has_won:
+                    break
 
-        print(f'can win in {win} ways')
+        print(f"can win in {win} ways")
         winning_ways.append(win)
 
     print(winning_ways)
     return math.prod(winning_ways)
 
+
 def part2(lines):
-    times = [int(''.join(lines[0].split()[1:]))]
-    distances = [int(''.join(lines[1].split()[1:]))]
+    times = [int("".join(lines[0].split()[1:]))]
+    distances = [int("".join(lines[1].split()[1:]))]
     length = len(times)
 
     s1, s2 = 0, 0
@@ -47,18 +50,19 @@ def part2(lines):
 
         # (1)*x^2 + (-time)*x + (distance) = 0
         a, b, c = 1, -time, distance
-        delta = b**2-(4*a*c)
+        delta = b**2 - (4 * a * c)
 
         if delta > 0:
             root = math.sqrt(delta)
-            s1 = math.floor((-b + root)/2*a)
-            s2 = math.floor((-b - root)/2*a)
+            s1 = math.floor((-b + root) / 2 * a)
+            s2 = math.floor((-b - root) / 2 * a)
             print(s1 - s2)
 
     return s1 - s2
 
+
 def main():
-    input = Path(__file__).parent / f'../inputs/{Path(__file__).stem}.txt'
+    input = Path(__file__).parent / f"../inputs/{Path(__file__).stem}.txt"
     # input = Path(__file__).parent / f'../inputs/test_{Path(__file__).stem}.txt'
 
     print()
@@ -70,9 +74,10 @@ def main():
 
     return (p1, p2)
 
+
 if __name__ == "__main__":
     t = time.perf_counter_ns()
     (p1, p2) = main()
     elapsed = time.perf_counter_ns() - t
     print(p1, p2)
-    print('elapsed: {}s'.format(elapsed/1000000000))
+    print("elapsed: {}s".format(elapsed / 1000000000))

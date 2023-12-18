@@ -1,40 +1,43 @@
 import time
-import regex as re
 from pathlib import Path
 
+import regex as re
+
 search_terms = {
-  'one': 1,
-  'two': 2,
-  'three': 3,
-  'four': 4,
-  'five': 5,
-  'six': 6,
-  'seven': 7,
-  'eight': 8,
-  'nine': 9,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
 }
 
-def get_line_nums(line, include_written_nums = False):
-    search = r'\d'
+
+def get_line_nums(line, include_written_nums=False):
+    search = r"\d"
     digits = []
 
-    if (include_written_nums):
-        more = '|'.join(list(search_terms.keys()))
-        search += r'|{}'.format(more) 
+    if include_written_nums:
+        more = "|".join(list(search_terms.keys()))
+        search += r"|{}".format(more)
 
     match = re.findall(search, line, overlapped=True)
 
     for m in match:
         num = search_terms.get(m)
-        if (num != None): 
+        if num != None:
             digits.append(int(num))
-        else: 
+        else:
             digits.append(int(m))
 
     return digits
 
+
 def main():
-    input = Path(__file__).parent / '../inputs/d01.txt'
+    input = Path(__file__).parent / "../inputs/d01.txt"
     file = open(input, "r", encoding="utf-8")
     # file = open("./inputs/test_d01.txt", "r", encoding="utf-8")
     basic_sum = 0
@@ -58,4 +61,4 @@ if __name__ == "__main__":
     (basic_sum, ext_sum) = main()
     elapsed = time.perf_counter_ns() - t
     print(basic_sum, ext_sum)
-    print('elapsed: {}s'.format(elapsed/1000000000))
+    print("elapsed: {}s".format(elapsed / 1000000000))
