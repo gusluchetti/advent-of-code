@@ -62,7 +62,7 @@ def part1(lines):
         y, x = queue.pop(-1)
         break
 
-    print(f"\nfinished!")
+    print("\nfinished!")
     return -1
 
 
@@ -72,8 +72,8 @@ def part2(lines):
 
 
 def main():
-    input = Path(__file__).parent / f"../inputs/d10.txt"
-    input = Path(__file__).parent / f"../inputs/test_d10.txt"
+    input = Path(__file__).parent / "../inputs/d10.txt"
+    input = Path(__file__).parent / "../inputs/test_d10.txt"
     file = open(input, "r", encoding="utf-8")
 
     p1 = part1(file.readlines())

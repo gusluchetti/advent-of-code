@@ -1,6 +1,5 @@
 import math
 import time
-from functools import reduce
 from pathlib import Path
 
 

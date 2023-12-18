@@ -73,7 +73,7 @@ def part1(lines):
             if left == "S" and RIGHT.__contains__(cur):
                 break
 
-    print(f"\nfinished")
+    print("\nfinished")
     print(path, len(path))
     print(bad)
     longest = int((len(path) + 1) / 2)
