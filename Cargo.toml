@@ -1,0 +1,53 @@
+[[bin]]
+name = 'd01'
+path = 'src/d01.rs'
+
+[[bin]]
+name = 'd02'
+path = 'src/d02.rs'
+
+[[bin]]
+name = 'd03'
+path = 'src/d03.rs'
+
+[[bin]]
+name = 'd04'
+path = 'src/d04.rs'
+
+[[bin]]
+name = 'd05'
+path = 'src/d05.rs'
+
+[[bin]]
+name = 'd06'
+path = 'src/d06.rs'
+
+[[bin]]
+name = 'd07'
+path = 'src/d07.rs'
+
+[[bin]]
+name = 'd08'
+path = 'src/d08.rs'
+
+[[bin]]
+name = 'd09'
+path = 'src/d09.rs'
+
+[[bin]]
+name = 'd10'
+path = 'src/d10.rs'
+
+[[bin]]
+name = 'd11'
+path = 'src/d11.rs'
+
+[package]
+name = "advent_of_code_2015"
+version = "0.1.0"
+edition = "2021"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+itertools = "0.12.0"
+md5 = "0.*"
