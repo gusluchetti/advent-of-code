@@ -1,24 +1,6 @@
 const INPUT_PATH: &str = "src/inputs/d01.txt";
 
-fn main() {
-    let input = std::fs::read_to_string(INPUT_PATH).expect("should have input");
-    task1(&input);
-    task2(&input);
-}
-
-fn task1(input: &String) {
-    let mut counter = 0;
-    for inst in input.chars() {
-        match inst {
-            '(' => counter += 1,
-            ')' => counter -= 1,
-            _ => (),
-        }
-    }
-    println!("final floor: {}", counter);
-}
-
-fn task2(input: &String) {
+fn counting_stairs(input: &String, basement_reached: Option<bool>) -> i32 {
     let mut counter = 0;
     for (i, inst) in input.chars().enumerate() {
         match inst {
@@ -27,9 +9,26 @@ fn task2(input: &String) {
             _ => (),
         }
 
-        if counter == -1 {
-            println!("got in basement at {} instruction", i + 1);
-            break;
+        if counter == -1 && basement_reached == Some(true) {
+            return (i + 1).try_into().unwrap();
         }
     }
+    counter
+}
+
+fn task1(input: &String) -> i32 {
+    counting_stairs(input, Some(false))
+}
+
+fn task2(input: &String) -> i32 {
+    counting_stairs(input, Some(true))
+}
+
+fn main() {
+    let input = std::fs::read_to_string(INPUT_PATH).expect("should have input");
+    let p1 = task1(&input);
+    println!("{}", p1);
+
+    let p2 = task2(&input);
+    println!("{}", p2);
 }
