@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bits/stdc++.h>
 #include <cstdio>
 #include <cstdlib>
@@ -6,16 +7,47 @@
 
 using namespace std;
 
-int loop(bool repeat_location) {
-  typedef pair<int, int> coords;
+typedef pair<int, int> coords;
+set<coords> coord_set = {};
+int total_blocks;
+bool repeat_location = false;
+
+int update_coords(int pos, int start, int end, int other) {
+  if (repeat_location == true) {
+    pair<set<coords>::iterator, bool> ins_return;
+    vector<pair<int, int>> vec;
+    for (int i = start; i <= end; i++) {
+      pair<int, int> new_pair;
+      if (pos == 1 || pos == 3) {
+        new_pair = make_pair(i, other);
+      } else if (pos == 2 || pos == 4) {
+        new_pair = make_pair(other, i);
+      }
+      vec.push_back(new_pair);
+    }
+
+    if (pos == 3 || pos == 4) {
+      reverse(vec.begin(), vec.end());
+    }
+
+    for (auto v : vec) {
+      cout << v.first << "," << v.second << "\n";
+      ins_return = coord_set.insert(v);
+      if (ins_return.second == false) {
+        cout << total_blocks << "\n";
+        exit(0);
+      }
+    }
+  }
+
+  return -1;
+}
+
+int loop() {
   coords last_coords = {0, 0};
   coords cur_coords = {0, 0};
-  int distance;
   string input;
   int cur_dir = 0; // 0N, 1W, 2S, 3E
-
-  pair<set<coords>::iterator, bool> ret;
-  set<coords> coord_set = {};
 
   while (getline(cin, input, ' ')) {
     char dir = input[0];
@@ -35,56 +67,44 @@ int loop(bool repeat_location) {
       cur_dir = (cur_dir + 1) % 4;
     }
 
+    cout << "\n\n" << dir << blocks << "\n";
     last_coords = cur_coords;
     switch (cur_dir) {
     case 0:
       cur_coords.second += blocks;
+      update_coords(2, last_coords.second, cur_coords.second,
+                    last_coords.first);
       break;
     case 1:
       cur_coords.first += blocks;
+      update_coords(1, last_coords.first, cur_coords.first, last_coords.second);
       break;
     case 2:
       cur_coords.second -= blocks;
+      update_coords(4, cur_coords.second, last_coords.second,
+                    last_coords.first);
       break;
     case 3:
       cur_coords.first -= blocks;
+      update_coords(3, cur_coords.first, last_coords.first, last_coords.second);
       break;
     default:
       cout << "not possible";
       return -1;
     }
-    distance = abs(cur_coords.first) + abs(cur_coords.second);
-
-    if (repeat_location == true) {
-      cout << last_coords.first << "," << last_coords.second << "\n";
-      cout << cur_coords.first << "," << cur_coords.second << "\n";
-
-      int diff = cur_coords.first - last_coords.first;
-      if (diff != 0) {
-        for (int i = cur_coords.first; i < cur_coords.first + diff; i++) {
-          
-        }
-        cout << 'x';
-      } else {
-        diff = cur_coords.second - last_coords.second;
-        cout << 'y';
-      }
-
-      ret = coord_set.insert(cur_coords);
-      if (ret.second == false) {
-        cout << distance << "\n";
-        break;
-      }
-    }
+    total_blocks = abs(cur_coords.first) + abs(cur_coords.second);
   }
 
-  cout << distance << "\n";
+  cout << total_blocks << "\n";
   return 0;
 }
 
-int part1() { return loop(false); }
+int part1() { return loop(); }
 
-int part2() { return loop(true); }
+int part2() {
+  repeat_location = true;
+  return loop();
+}
 
 int main() {
   // part1();
