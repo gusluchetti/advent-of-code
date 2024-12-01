@@ -35,5 +35,12 @@ int main() {
     sum += abs(left_list[i] - right_list[i]);
   }
 
-  std::cout << sum;
+  int similarity = 0;
+  for (int a = 0; a < size; a++) {
+    int target = left_list[a];
+    int freq = std::count(right_list.begin(), right_list.end(), target);
+    similarity += (target * freq);
+  }
+
+  std::cout << sum << "\n" << similarity;
 }
