@@ -11,8 +11,10 @@ int main() {
 
   std::string line;
   std::vector<int> report;
-  int basic_safe = 0;
-  int advanced_safe = 0;
+
+  int safe_levels = 0;
+  int safe_levels_w_dampener = 0;
+
   while (std::cin) {
     getline(std::cin, line);
     std::stringstream ss(line);
@@ -29,15 +31,16 @@ int main() {
 
     bool last_is_asc = (report[0] <= report[1]);
     int last = report[0];
-    bool is_safe = true;
+    bool is_basic_safe = true;
+    int bad_levels = 0;
     for (int i = 1; i < report.size(); i++) {
       int curr = report[i];
       bool is_asc = (last <= curr);
       int diff = abs(last - curr);
 
       if (last_is_asc != is_asc || (diff < 1 || diff > 3)) {
-        is_safe = false;
-        break;
+        is_basic_safe = false;
+        bad_levels++;
       }
 
       last = curr;
@@ -45,11 +48,14 @@ int main() {
     }
 
     std::cout << line << "\n";
-    if (is_safe) {
-      std::cout << "is safe!" << basic_safe << "\n\n";
-      basic_safe++;
+    if (is_basic_safe) {
+      safe_levels++;
+    }
+    if (bad_levels <= 1) {
+      safe_levels_w_dampener++;
     }
   }
 
-  std::cout << "\n" << basic_safe;
+  std::cout << "basic safe: " << safe_levels << "\n";
+  std::cout << "safe w/ dampener: " << safe_levels_w_dampener << "\n";
 }
