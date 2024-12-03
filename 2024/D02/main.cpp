@@ -4,8 +4,19 @@
 #include <sstream>
 #include <vector>
 
+bool is_safe(int first, int second, bool is_asc) {
+  int diff = abs(first - second);
+  bool diff_ok = (diff >= 1 && diff <= 3);
+
+  if (is_asc && first > second)
+    return false;
+  if (!is_asc && first < second)
+    return false;
+
+  return diff_ok;
+}
+
 int main() {
-  std::cout << "\n";
   std::ios::sync_with_stdio(0);
   std::cin.tie(0);
 
@@ -13,7 +24,6 @@ int main() {
   std::vector<int> report;
 
   int safe_levels = 0;
-  int safe_levels_w_dampener = 0;
 
   while (std::cin) {
     getline(std::cin, line);
@@ -29,33 +39,32 @@ int main() {
       continue;
     }
 
-    bool last_is_asc = (report[0] <= report[1]);
-    int last = report[0];
     bool is_basic_safe = true;
-    int bad_levels = 0;
+    bool is_dampened_safe = true;
+    std::vector<int> bad_indexes = {};
+
+    bool last_is_asc = (report[0] < report[1]);
+    int last = report[0];
     for (int i = 1; i < report.size(); i++) {
       int curr = report[i];
       bool is_asc = (last <= curr);
-      int diff = abs(last - curr);
 
-      if (last_is_asc != is_asc || (diff < 1 || diff > 3)) {
+      bool safe = is_safe(last, curr, last_is_asc);
+      if (!safe) {
         is_basic_safe = false;
-        bad_levels++;
+        bad_indexes.push_back(i);
+        bad_indexes.push_back(i - 1);
       }
 
       last = curr;
       last_is_asc = is_asc;
     }
+    std::cout << line << " | " << is_basic_safe << "\n";
 
-    std::cout << line << "\n";
     if (is_basic_safe) {
       safe_levels++;
-    }
-    if (bad_levels <= 1) {
-      safe_levels_w_dampener++;
     }
   }
 
   std::cout << "basic safe: " << safe_levels << "\n";
-  std::cout << "safe w/ dampener: " << safe_levels_w_dampener << "\n";
 }
