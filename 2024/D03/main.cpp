@@ -1,6 +1,5 @@
 #include <iostream>
 #include <regex>
-#include <sstream>
 #include <string>
 
 int main() {
@@ -17,7 +16,6 @@ int main() {
     if (line.empty()) {
       break;
     }
-    std::stringstream ss(line);
     std::cout << line << "\n";
 
     // std::regex e("mul\\((\\d{1,3}),(\\d{1,3})\\)");
