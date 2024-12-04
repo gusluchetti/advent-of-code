@@ -135,9 +135,9 @@ int main() {
     ws.push_back(ws_line);
   }
 
-  for (int y = 0; y < ws.size(); y++) {
+  for (size_t y = 0; y < ws.size(); y++) {
     std::vector<char> ws_line = ws[y];
-    for (int x = 0; x < ws_line.size(); x++) {
+    for (size_t x = 0; x < ws_line.size(); x++) {
       char c = ws_line[x];
       std::cout << "at: " << x << "," << y;
       std::cout << " | " << c << "\n";
@@ -162,5 +162,5 @@ int main() {
     std::cout << std::endl;
   }
 
-  std::cout << count_xmas << "," << count_x_mas;
+  std::cout << count_xmas << ", " << count_x_mas << "\n";
 }
