@@ -9,7 +9,8 @@ int count_x_mas_occurrences(std::vector<std::vector<char>> &ws, int x, int y) {
   int max_x = ws[0].size();
   // check 4 possible directions, assuming ltr checks if possible
   // 1. Ms on TOP, first M on left
-  if (y <= max_y - 4 && x <= max_x - 4) {
+  if (y <= max_y - 3 && x <= max_x - 3) {
+    std::cout << "going down, right\n";
     std::string mas_1 = {ws[y][x], ws[y + 1][x + 1], ws[y + 2][x + 2]};
     std::string mas_2 = {ws[y][x + 2], ws[y + 1][x + 1], ws[y + 2][x]};
     if (mas_1 == "MAS" && mas_2 == "MAS") {
@@ -17,7 +18,8 @@ int count_x_mas_occurrences(std::vector<std::vector<char>> &ws, int x, int y) {
     }
   }
   // 2. Ms on RIGHT, first M on top
-  if (y <= max_y - 4 && x >= 3) {
+  if (y <= max_y - 3 && x >= 2) {
+    std::cout << "going left, down\n";
     std::string mas_1 = {ws[y][x], ws[y + 1][x - 1], ws[y + 2][x - 2]};
     std::string mas_2 = {ws[y + 2][x], ws[y + 1][x - 1], ws[y][x - 2]};
     if (mas_1 == "MAS" && mas_2 == "MAS") {
@@ -25,7 +27,8 @@ int count_x_mas_occurrences(std::vector<std::vector<char>> &ws, int x, int y) {
     }
   }
   // 3. Ms on DOWN, first M on left
-  if (y >= 3 && x <= max_x - 4) {
+  if (y >= 2 && x <= max_x - 3) {
+    std::cout << "going up, right\n";
     std::string mas_1 = {ws[y][x], ws[y - 1][x + 1], ws[y - 2][x + 2]};
     std::string mas_2 = {ws[y][x + 2], ws[y - 1][x + 1], ws[y - 2][x]};
     if (mas_1 == "MAS" && mas_2 == "MAS") {
@@ -33,7 +36,8 @@ int count_x_mas_occurrences(std::vector<std::vector<char>> &ws, int x, int y) {
     }
   }
   // 4. Ms on LEFT, first M on top
-  if (y <= max_y - 4 && x <= max_x - 4) {
+  if (y <= max_y - 3 && x <= max_x - 3) {
+    std::cout << "going right, down\n";
     std::string mas_1 = {ws[y][x], ws[y + 1][x + 1], ws[y + 2][x + 2]};
     std::string mas_2 = {ws[y + 2][x], ws[y + 1][x + 1], ws[y][x + 2]};
     if (mas_1 == "MAS" && mas_2 == "MAS") {
