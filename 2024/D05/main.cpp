@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 #include <map>
@@ -10,6 +11,7 @@ int main() {
   std::cin.tie(0);
 
   std::string line;
+  int sum_middle_valid = 0;
   bool at_rules = true;
   std::map<int, std::vector<int>> page_dict;
   std::vector<int> page_update;
@@ -27,7 +29,6 @@ int main() {
       continue;
     }
 
-    std::cout << line << "\n";
     page_update = {};
     if (at_rules) {
       const size_t delimiter = line.find("|");
@@ -41,17 +42,45 @@ int main() {
         page_update.push_back(num);
         iss.ignore();
       }
-    }
-
-    // check if page update is good
-    for (size_t i = page_update.size() - 1; i >= 0; i--) {
-      int page = page_update[i];
-      auto nums_after = page_dict[page];
-      std::cout << page;
-      for (auto t : nums_after) {
-        std::cout << " " << t;
+      for (auto p : page_update) {
+        std::cout << p << "\n";
       }
-      std::cout << std::endl;
+
+      bool correct = true;
+      int max = page_update.size() - 1;
+      for (int i = max; i >= 0; i--) {
+        int page = page_update[i];
+        std::map<int, std::vector<int>>::iterator rule_iter =
+            page_dict.find(page);
+        if (rule_iter == page_dict.end()) {
+          continue;
+        }
+
+        std::vector<int> rule_after = rule_iter->second;
+        for (auto a : rule_after) {
+          int count =
+              std::count(page_update.begin(), page_update.begin() + i + 1, a);
+          if (count > 0) {
+            std::cout << a << " is bad! at " << page << "\n";
+            correct = false;
+            break;
+          }
+        }
+
+        if (correct == false) {
+          break;
+        }
+      }
+      std::cout << "\n";
+
+      if (correct) {
+        int middle_index = (page_update.size() / 2);
+        int middle_value = page_update.at(middle_index);
+        sum_middle_valid += middle_value;
+        std::cout << middle_value << " " << sum_middle_valid << "\n";
+      }
     }
   }
+
+  std::cout << sum_middle_valid;
 }
