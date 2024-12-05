@@ -12,6 +12,7 @@ int main() {
 
   std::string line;
   int sum_middle_valid = 0;
+  int sum_middle_invalid = 0;
   bool at_rules = true;
   std::map<int, std::vector<int>> page_dict;
   std::vector<int> page_update;
@@ -42,12 +43,11 @@ int main() {
         page_update.push_back(num);
         iss.ignore();
       }
-      for (auto p : page_update) {
-        std::cout << p << "\n";
-      }
+      std::cout << line << "\n";
 
       bool correct = true;
       int max = page_update.size() - 1;
+      int middle = page_update[(page_update.size() / 2)];
       for (int i = max; i >= 0; i--) {
         int page = page_update[i];
         std::map<int, std::vector<int>>::iterator rule_iter =
@@ -58,27 +58,33 @@ int main() {
 
         std::vector<int> rule_after = rule_iter->second;
         for (auto a : rule_after) {
-          int count =
-              std::count(page_update.begin(), page_update.begin() + i + 1, a);
-          if (count > 0) {
-            std::cout << a << " is bad! at " << page << "\n";
+          std::cout << a << "\n";
+          std::cout << i << "\n";
+          auto found = std::find(page_update.begin(), page_update.end(), a);
+          if (found != page_update.end()) {
+            std::cout << *found << "\n";
+            std::cout << a << " is bad, should be after " << page << "\n";
             correct = false;
-            break;
+            page_update.erase(found);
+            page_update.insert(page_update.begin() + i, a);
+            for (auto p : page_update) {
+              std::cout << p << " ";
+            }
           }
         }
-
-        if (correct == false) {
-          break;
-        }
       }
-      std::cout << "\n";
 
+      int middle_invalid = page_update[(page_update.size() / 2)];
       if (correct) {
-        int middle_index = (page_update.size() / 2);
-        int middle_value = page_update.at(middle_index);
-        sum_middle_valid += middle_value;
-        std::cout << middle_value << " " << sum_middle_valid << "\n";
+        sum_middle_valid += middle;
       }
+      if (!correct) {
+        sum_middle_invalid += middle_invalid;
+      }
+
+      std::cout << "\n\n";
+      std::cout << middle << " " << sum_middle_valid << "\n";
+      std::cout << middle_invalid << " " << sum_middle_invalid << "\n";
     }
   }
 
