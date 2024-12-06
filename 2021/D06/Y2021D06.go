@@ -57,7 +57,7 @@ func DumbFishSim(fish []int, days int) int {
 				fish = append(fish, 9)
 			}
 		}
-		fmt.Printf("\nDay %d: %v, len=%d", d, fish, len(fish))
+		fmt.Printf("\nDay %d, len=%d", d, len(fish))
 	}
 	return len(fish)
 }
@@ -85,9 +85,7 @@ func main() {
 		fish = append(fish, num)
 	}
 
-	sum := DumbFishSim(fish, 80) //3,2, 20 days, 14
-	// lifespan := 9                       // 8 to 0 days
-	//respawnAge := 6                     // respawns with 6 days
-	// _ := SmartFishSim(fish, 256, lifespan, respawnAge)
+	sum := DumbFishSim(fish, 256)
+	// sum := SmartFishSim(fish, 256, 9, 6) // fish, days, lifespan, respawn Age
 	fmt.Printf("\n\nTotal fish population is %d", sum)
 }
