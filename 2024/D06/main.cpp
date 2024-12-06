@@ -15,9 +15,7 @@ struct Guard {
   int dir_index = 0;
   std::pair<int, int> pos;
 
-  char &dir() {
-    return guard_directions[(sizeof(guard_directions) + dir_index) % 4];
-  }
+  char &dir() { return guard_directions[dir_index]; }
 };
 
 void print_grid() {
@@ -65,8 +63,6 @@ int main() {
 
   while (!done) {
     print_grid();
-    // TODO: make sure dir_index is always between 0 and 3
-    // overflowing right now
     std::pair<int, int> next_pos = {
         guard.pos.first + normal_next_pos[guard.dir_index].first,
         guard.pos.second + normal_next_pos[guard.dir_index].second};
@@ -86,6 +82,9 @@ int main() {
       guard.pos = {guard.pos.first + blocked_next_pos[guard.dir_index].first,
                    guard.pos.second + blocked_next_pos[guard.dir_index].second};
       guard.dir_index++;
+      if (guard.dir_index >= 4) {
+        guard.dir_index = 0;
+      }
       std::cout << "\n" << guard.dir_index << " " << guard.dir() << "\n";
     } else {
       guard.pos = next_pos;
