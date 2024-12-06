@@ -46,9 +46,10 @@ int main() {
       std::cout << line << "\n";
 
       bool correct = true;
-      int max = page_update.size() - 1;
       int middle = page_update[(page_update.size() / 2)];
-      for (int i = max; i >= 0; i--) {
+      int i = page_update.size() - 1;
+
+      for (int i = page_update.size() - 1; i >= 0; i--) {
         int page = page_update[i];
         std::map<int, std::vector<int>>::iterator rule_iter =
             page_dict.find(page);
@@ -57,35 +58,41 @@ int main() {
         }
 
         std::vector<int> rule_after = rule_iter->second;
-        for (auto ra : rule_after) {
-          std::cout << ra << " ";
-        }
-        std::cout << "\n";
         for (auto a : rule_after) {
           auto found =
               std::find(page_update.begin(), page_update.begin() + i, a);
           if (found != page_update.begin() + i) {
-            std::cout << "\n"
-                      << a << " is bad, should be after " << page << "\n";
             correct = false;
+            std::cout << "\n" << a << " is bad, should be after " << page;
             page_update.erase(found);
-            page_update.insert(page_update.begin() + i, a);
-            i = max;
+            if (i == page_update.size() - 1) {
+              page_update.push_back(a);
+            } else {
+              page_update.insert(page_update.begin() + i, a);
+            }
+            i = page_update.size();
+            break;
           }
         }
       }
 
-      int middle_invalid = page_update[(page_update.size() / 2)];
       if (correct) {
         sum_middle_valid += middle;
       }
+
+      int middle_invalid = page_update[(page_update.size() / 2)];
       if (!correct) {
+        std::cout << " final page update: ";
+        for (auto p : page_update) {
+          std::cout << p << ",";
+        }
         sum_middle_invalid += middle_invalid;
       }
 
       std::cout << "\n\n";
-      std::cout << middle << " " << sum_middle_valid << "\n";
-      std::cout << middle_invalid << " " << sum_middle_invalid << "\n";
+      std::cout << "mid valid: " << middle << " " << sum_middle_valid << "\n";
+      std::cout << "mid invalid: " << middle_invalid << " "
+                << sum_middle_invalid << "\n";
     }
   }
 }
