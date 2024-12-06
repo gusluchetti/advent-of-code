@@ -6,22 +6,34 @@
 #include <utility>
 #include <vector>
 
+std::vector<std::vector<char>> grid;
 char guard_directions[4] = {'^', '>', 'v', '<'};
 std::pair<int, int> normal_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
 std::pair<int, int> blocked_next_pos[4] = {{0, +1}, {+1, 0}, {0, -1}, {-1, 0}};
 
 struct Guard {
   int dir_index = 0;
-  char &dir = guard_directions[dir_index];
   std::pair<int, int> pos;
+
+  char &dir() {
+    return guard_directions[(sizeof(guard_directions) + dir_index) % 4];
+  }
 };
+
+void print_grid() {
+  for (size_t y = 0; y < grid.size(); y++) {
+    for (size_t x = 0; x < grid[0].size(); x++) {
+      std::cout << grid[y][x];
+    }
+    std::cout << "\n";
+  }
+}
 
 int main() {
   std::ios::sync_with_stdio(0);
   std::cin.tie(0);
 
   std::string line;
-  std::vector<std::vector<char>> grid;
   Guard guard;
 
   bool done = false;
@@ -37,7 +49,7 @@ int main() {
 
     for (size_t i = 0; i < line.size() - 1; i++) {
       char c = line[i];
-      for (int d = 0; d < sizeof(guard_directions) - 1; d++) {
+      for (size_t d = 0; d < sizeof(guard_directions) - 1; d++) {
         if (c == guard_directions[d]) {
           guard.pos = {count, i};
           guard.dir_index = d;
@@ -52,39 +64,40 @@ int main() {
   std::cout << guard.pos.first << "," << guard.pos.second << "\n";
 
   while (!done) {
-    for (size_t y = 0; y < grid.size() - 1; y++) {
-      for (size_t x = 0; x < grid[0].size() - 1; x++) {
-        std::cout << grid[y][x];
-      }
-      std::cout << "\n";
-    }
-
+    print_grid();
+    // TODO: make sure dir_index is always between 0 and 3
+    // overflowing right now
     std::pair<int, int> next_pos = {
         guard.pos.first + normal_next_pos[guard.dir_index].first,
         guard.pos.second + normal_next_pos[guard.dir_index].second};
-    std::cout << "new pos: " << guard.pos.first << "," << guard.pos.second
+    std::cout << "(try) new pos: " << next_pos.first << "," << next_pos.second
               << "\n";
 
-    if (grid[next_pos.first][next_pos.second] == '#') {
+    char grid_char = '.';
+    try {
+      grid_char = grid.at(next_pos.first).at(next_pos.second);
+    } catch (const std::out_of_range &e) {
+      done = true;
+      continue;
+    }
+
+    grid[guard.pos.first][guard.pos.second] = '.';
+    if (grid_char == '#') {
       guard.pos = {guard.pos.first + blocked_next_pos[guard.dir_index].first,
                    guard.pos.second + blocked_next_pos[guard.dir_index].second};
       guard.dir_index++;
+      std::cout << "\n" << guard.dir_index << " " << guard.dir() << "\n";
     } else {
       guard.pos = next_pos;
     }
-
-    try {
-      char new_location = grid.at(next_pos.first).at(next_pos.second);
-    } catch (const std::out_of_range &e) {
-      done = true;
-    }
+    grid[guard.pos.first][guard.pos.second] = guard.dir();
 
     auto res = seen_locations.insert(next_pos);
     if (res.second == true) {
-      std::cout << "new pos";
+      std::cout << "new pos added" << "\n";
     }
     if (res.second == false) {
-      std::cout << "already seen";
+      std::cout << "already seen" << "\n";
     }
   }
 
