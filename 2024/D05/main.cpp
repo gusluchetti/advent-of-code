@@ -57,19 +57,20 @@ int main() {
         }
 
         std::vector<int> rule_after = rule_iter->second;
+        for (auto ra : rule_after) {
+          std::cout << ra << " ";
+        }
+        std::cout << "\n";
         for (auto a : rule_after) {
-          std::cout << a << "\n";
-          std::cout << i << "\n";
-          auto found = std::find(page_update.begin(), page_update.end(), a);
-          if (found != page_update.end()) {
-            std::cout << *found << "\n";
-            std::cout << a << " is bad, should be after " << page << "\n";
+          auto found =
+              std::find(page_update.begin(), page_update.begin() + i, a);
+          if (found != page_update.begin() + i) {
+            std::cout << "\n"
+                      << a << " is bad, should be after " << page << "\n";
             correct = false;
             page_update.erase(found);
             page_update.insert(page_update.begin() + i, a);
-            for (auto p : page_update) {
-              std::cout << p << " ";
-            }
+            i = max;
           }
         }
       }
@@ -87,6 +88,4 @@ int main() {
       std::cout << middle_invalid << " " << sum_middle_invalid << "\n";
     }
   }
-
-  std::cout << sum_middle_valid;
 }
