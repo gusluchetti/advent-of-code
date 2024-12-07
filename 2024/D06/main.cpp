@@ -62,7 +62,7 @@ int main() {
   std::cout << guard.pos.first << "," << guard.pos.second << "\n";
 
   while (!done) {
-    print_grid();
+    // print_grid();
     std::pair<int, int> next_pos = {
         guard.pos.first + normal_next_pos[guard.dir_index].first,
         guard.pos.second + normal_next_pos[guard.dir_index].second};
