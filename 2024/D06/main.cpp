@@ -11,6 +11,17 @@ char guard_directions[4] = {'^', '>', 'v', '<'};
 std::pair<int, int> normal_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
 std::pair<int, int> blocked_next_pos[4] = {{0, +1}, {+1, 0}, {0, -1}, {-1, 0}};
 
+// part 1
+bool done = false;
+std::set<std::pair<int, int>> seen_locations = {};
+
+// part 2
+bool is_testing_loop = false;
+int blocked_count = 0;
+int possible_loops = 0;
+std::pair<int, int> safe_pos;
+int safe_dir_index;
+
 struct Guard {
   int dir_index = 0;
   std::pair<int, int> pos;
@@ -18,14 +29,28 @@ struct Guard {
   char &dir() { return guard_directions[dir_index]; }
 };
 
-void print_grid() {
+void print_grid(Guard guard) {
   for (size_t y = 0; y < grid.size(); y++) {
     for (size_t x = 0; x < grid[0].size(); x++) {
       std::cout << grid[y][x];
     }
     std::cout << "\n";
   }
+  std::cout << guard.pos.first << "," << guard.pos.second << "\n";
+  std::cout << guard.dir_index << " " << guard.dir() << "\n";
   std::cout << "\n";
+}
+
+void reset(Guard &guard) {
+  is_testing_loop = false;
+  blocked_count = 0;
+  std::cout << "STOPPED TESTING\n";
+
+  grid[guard.pos.first][guard.pos.second] = '.';
+
+  guard.pos = safe_pos;
+  guard.dir_index = safe_dir_index;
+  grid[guard.pos.first][guard.pos.second] = guard.dir();
 }
 
 int main() {
@@ -34,13 +59,6 @@ int main() {
 
   std::string line;
   Guard guard;
-
-  bool done = false;
-  bool is_testing_loop = false;
-  std::set<std::pair<int, int>> seen_locations = {};
-  std::pair<int, int> save_pos;
-  int blocked_count = 0;
-  int possible_loops = 0;
 
   int count = 0;
   while (std::cin) {
@@ -64,12 +82,16 @@ int main() {
   }
 
   seen_locations.insert(guard.pos);
-  std::cout << guard.pos.first << "," << guard.pos.second << "\n";
 
   while (!done) {
-    print_grid();
+    count++;
+    if (count >= 100) {
+      break;
+    }
+    print_grid(guard);
     if (!is_testing_loop) {
-      save_pos = {guard.pos.first, guard.pos.second};
+      safe_pos = {guard.pos.first, guard.pos.second};
+      safe_dir_index = guard.dir_index;
     }
     std::pair<int, int> next_pos = {
         guard.pos.first + normal_next_pos[guard.dir_index].first,
@@ -79,13 +101,13 @@ int main() {
     try {
       grid_char = grid.at(next_pos.first).at(next_pos.second);
     } catch (const std::out_of_range &e) {
-      if (is_testing_loop) {
-        is_testing_loop = false;
-        blocked_count = 0;
-        guard.pos = save_pos;
+      if (!is_testing_loop) {
+        done = true;
         continue;
       }
-      done = true;
+
+      done = false;
+      reset(guard);
       continue;
     }
 
@@ -97,11 +119,8 @@ int main() {
     if (grid_char == '#') {
       if (is_testing_loop) {
         blocked_count++;
-        if (blocked_count == 5 && save_pos == next_pos) {
-          possible_loops++;
-          is_testing_loop = false;
-          blocked_count = 0;
-          guard.pos = save_pos;
+        if (blocked_count == 5 && safe_pos == next_pos) {
+          reset(guard);
           continue;
         }
       }
@@ -110,19 +129,18 @@ int main() {
       if (guard.dir_index >= 4) {
         guard.dir_index = 0;
       }
-      std::cout << "\n" << guard.dir_index << " " << guard.dir() << "\n";
       // GOING FORWARD
     } else {
       if (!is_testing_loop) {
-        save_pos = next_pos;
+        safe_pos = next_pos;
         is_testing_loop = true;
+        std::cout << "STARTED TESTING\n\n";
         blocked_count++;
         guard.pos = right_pos;
         guard.dir_index++;
         if (guard.dir_index >= 4) {
           guard.dir_index = 0;
         }
-        std::cout << "\n" << guard.dir_index << " " << guard.dir() << "\n";
       } else {
         guard.pos = next_pos;
       }
@@ -130,20 +148,15 @@ int main() {
     grid[guard.pos.first][guard.pos.second] = guard.dir();
 
     auto res = seen_locations.insert(guard.pos);
-    // new location
     if (res.second == true) {
-      // std::cout << "new pos added: " << guard.pos.first << ","
-      //           << guard.pos.second << "\n";
+      // new location
     }
-    // already seen
     if (res.second == false) {
+      // already seen
     }
   }
 
   std::cout << "\n";
   std::cout << seen_locations.size() << "\n";
   std::cout << possible_loops << "\n";
-
-  // NOTE: if to my right, at any distance, there is an obstacle, place obstacle
-  // in front of me if after 4 hits, i'm back where im started, add one
 }
