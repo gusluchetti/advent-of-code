@@ -66,8 +66,6 @@ int main() {
     std::pair<int, int> next_pos = {
         guard.pos.first + normal_next_pos[guard.dir_index].first,
         guard.pos.second + normal_next_pos[guard.dir_index].second};
-    std::cout << "(try) new pos: " << next_pos.first << "," << next_pos.second
-              << "\n";
 
     char grid_char = '.';
     try {
@@ -91,9 +89,10 @@ int main() {
     }
     grid[guard.pos.first][guard.pos.second] = guard.dir();
 
-    auto res = seen_locations.insert(next_pos);
+    auto res = seen_locations.insert(guard.pos);
     if (res.second == true) {
-      std::cout << "new pos added" << "\n";
+      std::cout << "new pos added: " << guard.pos.first << ","
+                << guard.pos.second << "\n";
     }
     if (res.second == false) {
       std::cout << "already seen" << "\n";
