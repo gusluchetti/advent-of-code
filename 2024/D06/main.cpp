@@ -25,6 +25,7 @@ void print_grid() {
     }
     std::cout << "\n";
   }
+  std::cout << "\n";
 }
 
 int main() {
@@ -35,7 +36,11 @@ int main() {
   Guard guard;
 
   bool done = false;
+  bool is_testing_loop = false;
   std::set<std::pair<int, int>> seen_locations = {};
+  std::pair<int, int> save_pos;
+  int blocked_count = 0;
+  int possible_loops = 0;
 
   int count = 0;
   while (std::cin) {
@@ -62,7 +67,10 @@ int main() {
   std::cout << guard.pos.first << "," << guard.pos.second << "\n";
 
   while (!done) {
-    // print_grid();
+    print_grid();
+    if (!is_testing_loop) {
+      save_pos = {guard.pos.first, guard.pos.second};
+    }
     std::pair<int, int> next_pos = {
         guard.pos.first + normal_next_pos[guard.dir_index].first,
         guard.pos.second + normal_next_pos[guard.dir_index].second};
@@ -71,33 +79,71 @@ int main() {
     try {
       grid_char = grid.at(next_pos.first).at(next_pos.second);
     } catch (const std::out_of_range &e) {
+      if (is_testing_loop) {
+        is_testing_loop = false;
+        blocked_count = 0;
+        guard.pos = save_pos;
+        continue;
+      }
       done = true;
       continue;
     }
 
     grid[guard.pos.first][guard.pos.second] = '.';
+    std::pair<int, int> right_pos = {
+        guard.pos.first + blocked_next_pos[guard.dir_index].first,
+        guard.pos.second + blocked_next_pos[guard.dir_index].second};
+    // GOING RIGHT
     if (grid_char == '#') {
-      guard.pos = {guard.pos.first + blocked_next_pos[guard.dir_index].first,
-                   guard.pos.second + blocked_next_pos[guard.dir_index].second};
+      if (is_testing_loop) {
+        blocked_count++;
+        if (blocked_count == 5 && save_pos == next_pos) {
+          possible_loops++;
+          is_testing_loop = false;
+          blocked_count = 0;
+          guard.pos = save_pos;
+          continue;
+        }
+      }
+      guard.pos = right_pos;
       guard.dir_index++;
       if (guard.dir_index >= 4) {
         guard.dir_index = 0;
       }
       std::cout << "\n" << guard.dir_index << " " << guard.dir() << "\n";
+      // GOING FORWARD
     } else {
-      guard.pos = next_pos;
+      if (!is_testing_loop) {
+        save_pos = next_pos;
+        is_testing_loop = true;
+        blocked_count++;
+        guard.pos = right_pos;
+        guard.dir_index++;
+        if (guard.dir_index >= 4) {
+          guard.dir_index = 0;
+        }
+        std::cout << "\n" << guard.dir_index << " " << guard.dir() << "\n";
+      } else {
+        guard.pos = next_pos;
+      }
     }
     grid[guard.pos.first][guard.pos.second] = guard.dir();
 
     auto res = seen_locations.insert(guard.pos);
+    // new location
     if (res.second == true) {
-      std::cout << "new pos added: " << guard.pos.first << ","
-                << guard.pos.second << "\n";
+      // std::cout << "new pos added: " << guard.pos.first << ","
+      //           << guard.pos.second << "\n";
     }
+    // already seen
     if (res.second == false) {
-      std::cout << "already seen" << "\n";
     }
   }
 
-  std::cout << seen_locations.size() << "/n";
+  std::cout << "\n";
+  std::cout << seen_locations.size() << "\n";
+  std::cout << possible_loops << "\n";
+
+  // NOTE: if to my right, at any distance, there is an obstacle, place obstacle
+  // in front of me if after 4 hits, i'm back where im started, add one
 }
