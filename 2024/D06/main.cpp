@@ -6,6 +6,9 @@
 #include <utility>
 #include <vector>
 
+// TODO:
+// add test obstable to field! and save its position so we can reset it later
+
 std::vector<std::vector<char>> grid;
 char guard_directions[4] = {'^', '>', 'v', '<'};
 std::pair<int, int> normal_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
@@ -85,7 +88,7 @@ int main() {
 
   while (!done) {
     count++;
-    if (count >= 100) {
+    if (count >= 150) {
       break;
     }
     print_grid(guard);
@@ -106,7 +109,6 @@ int main() {
         continue;
       }
 
-      done = false;
       reset(guard);
       continue;
     }
@@ -119,7 +121,7 @@ int main() {
     if (grid_char == '#') {
       if (is_testing_loop) {
         blocked_count++;
-        if (blocked_count == 5 && safe_pos == next_pos) {
+        if (blocked_count == 4 && safe_pos == next_pos) {
           reset(guard);
           continue;
         }
@@ -131,7 +133,7 @@ int main() {
       }
       // GOING FORWARD
     } else {
-      if (!is_testing_loop) {
+      if (!is_testing_loop && grid[right_pos.first][right_pos.second] != '#') {
         safe_pos = next_pos;
         is_testing_loop = true;
         std::cout << "STARTED TESTING\n\n";
@@ -147,12 +149,14 @@ int main() {
     }
     grid[guard.pos.first][guard.pos.second] = guard.dir();
 
-    auto res = seen_locations.insert(guard.pos);
-    if (res.second == true) {
-      // new location
-    }
-    if (res.second == false) {
-      // already seen
+    if (!is_testing_loop) {
+      auto res = seen_locations.insert(guard.pos);
+      if (res.second == true) {
+        // new location
+      }
+      if (res.second == false) {
+        // already seen
+      }
     }
   }
 
