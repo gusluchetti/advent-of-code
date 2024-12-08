@@ -100,5 +100,13 @@ int main() {
 
   seen_locations = {path.begin(), path.end()};
   std::cout << "\n";
-  std::cout << seen_locations.size() << "\n";
+  std::cout << "path: \n";
+  for (auto p : path) {
+    std::cout << "(" << p.first << "," << p.second << ")";
+  }
+  std::cout << "\nunique locations: \n";
+  for (auto s : seen_locations) {
+    std::cout << "(" << s.first << "," << s.second << ")";
+  }
+  std::cout << "\n" << seen_locations.size() << "\n";
 }
