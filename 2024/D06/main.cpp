@@ -18,10 +18,10 @@ std::pair<int, int> straight_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
 std::pair<int, int> right_next_pos[4] = {{0, +1}, {+1, 0}, {0, -1}, {-1, 0}};
 
 bool done = false;
+bool add_obstacle = false;
 std::vector<std::pair<int, int>> path = {};
 std::set<std::pair<int, int>> seen_locations = {};
-
-int num_loops = 0;
+std::set<std::pair<int, int>> obstacles = {};
 
 struct Guard {
   int dir_index = 0;
@@ -37,37 +37,31 @@ struct Guard {
 };
 
 // 1896 too low | 1922, 2013 incorrect
-bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
-                          std::vector<std::vector<char>> grid) {
+bool check_path_collision(Guard guard_cp,
+                          std::vector<std::vector<char>> grid_cp) {
   bool should_quit = false;
-  try {
-  } catch (const std::out_of_range &e) {
-    std::cout << "next is out of bounds...\n";
-  }
 
   std::vector<std::pair<int, int>> curr_path = {
-      {guard.pos.first + right_next_pos[guard.dir_index].first,
-       guard.pos.second + right_next_pos[guard.dir_index].second}};
-  guard.rotate();
+      {guard_cp.pos.first + right_next_pos[guard_cp.dir_index].first,
+       guard_cp.pos.second + right_next_pos[guard_cp.dir_index].second}};
+  guard_cp.rotate();
 
   std::cout << "testing loop...\n";
   while (!should_quit) {
     int dupe_count = 0;
 
-    std::cout << curr_path.back().first << "," << curr_path.back().second
-              << "\n";
     std::pair<int, int> next = {
-        curr_path.back().first + straight_next_pos[guard.dir_index].first,
-        curr_path.back().second + straight_next_pos[guard.dir_index].second};
+        curr_path.back().first + straight_next_pos[guard_cp.dir_index].first,
+        curr_path.back().second + straight_next_pos[guard_cp.dir_index].second};
 
     try {
-      auto on_grid = grid.at(next.first).at(next.second);
+      auto on_grid = grid_cp.at(next.first).at(next.second);
       if (on_grid == '#') {
         next = {
-            curr_path.back().first + right_next_pos[guard.dir_index].first,
-            curr_path.back().second + right_next_pos[guard.dir_index].second,
+            curr_path.back().first + right_next_pos[guard_cp.dir_index].first,
+            curr_path.back().second + right_next_pos[guard_cp.dir_index].second,
         };
-        guard.rotate();
+        guard_cp.rotate();
       }
     } catch (const std::out_of_range &e) {
       should_quit = true;
@@ -75,10 +69,6 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
     }
 
     curr_path.push_back(next);
-    // if (line.size() >= grid.size() * grid[0].size()) {
-    //   std::cout << "\nLINE TOO BIG!!!\n";
-    //   break;
-    // }
 
     auto penultimate = curr_path[curr_path.size() - 2];
     auto last = curr_path[curr_path.size() - 1];
@@ -87,7 +77,6 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
         dupe_count++;
         if (dupe_count >= 2) {
           std::cout << "LOOPED!!\n";
-          num_loops++;
           return true;
         }
       }
@@ -99,6 +88,10 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
 
 bool move_guard(Guard &guard) {
   path.push_back(guard.pos);
+  if (add_obstacle) {
+    obstacles.insert(guard.pos);
+    add_obstacle = false;
+  }
   // if (path.size() >= 27) {
   //   return true;
   // }
@@ -108,8 +101,9 @@ bool move_guard(Guard &guard) {
       guard.pos.second + straight_next_pos[guard.dir_index].second};
 
   std::cout << path.size() << "\n";
-  std::cout << guard.pos.first << "," << guard.pos.second << "\n";
-  std::cout << straight_pos.first << "," << straight_pos.second << "\n";
+  std::cout << "from " << guard.pos.first << "," << guard.pos.second;
+  std::cout << " (try) to " << straight_pos.first << "," << straight_pos.second
+            << "\n";
 
   char grid_char = '.';
   try {
@@ -125,15 +119,16 @@ bool move_guard(Guard &guard) {
 
   auto cp_grid = grid;
   cp_grid[straight_pos.first][straight_pos.second] = '#';
-  bool is_loop = check_path_collision(path, guard, cp_grid);
+  bool is_loop = check_path_collision(guard, cp_grid);
+  if (is_loop) {
+    add_obstacle = true;
+  }
   std::cout << "\n";
 
-  // GOING RIGHT
-  if (grid_char == '#') {
+  if (grid_char == '#') { // GOING RIGHT
     guard.pos = right_pos;
     guard.rotate();
-    // GOING FORWARD
-  } else {
+  } else { // GOING FORWARD
     guard.pos = straight_pos;
   }
   grid[guard.pos.first][guard.pos.second] = guard.dir();
@@ -188,7 +183,6 @@ int main() {
 
   std::cout << "\n";
   std::cout << "path: " << path.size() << " \n";
-  ;
   // for (auto p : path) {
   //   std::cout << "(" << p.first << "," << p.second << ")";
   // }
@@ -196,5 +190,5 @@ int main() {
   // for (auto s : seen_locations) {
   //   std::cout << "(" << s.first << "," << s.second << ")";
   // }
-  std::cout << "\nnum loops: " << num_loops << " \n";
+  std::cout << "\nnum loops: " << obstacles.size() << " \n";
 }
