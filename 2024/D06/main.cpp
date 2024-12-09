@@ -21,7 +21,6 @@ bool done = false;
 std::vector<std::pair<int, int>> path = {};
 std::set<std::pair<int, int>> seen_locations = {};
 
-bool should_check = false;
 int num_loops = 0;
 
 struct Guard {
@@ -37,7 +36,7 @@ struct Guard {
   }
 };
 
-// 863 too low
+// 1896 too low, 1922 incorrect
 bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
   bool should_quit = false;
   std::vector<std::pair<int, int>> line = {
@@ -65,19 +64,16 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
     }
 
     line.push_back(next);
-  }
-
-  for (size_t j = 0; j < line.size() - 1; j++) {
-    std::cout << line[j].first << "," << line[j].second << " ";
-    for (size_t i = 0; i < path.size() - 1; i++) {
-      if (line[j] == path[i] && line[j + 1] == path[i + 1]) {
-        std::cout << "LOOPED!!\n";
-        num_loops++;
-        return true;
-      }
+    std::cout << line.size() << "\n";
+    if (line.size() >= grid.size() * grid[0].size()) {
+      break;
+    }
+    if (line.back() == guard.pos) {
+      std::cout << "LOOPED!!\n";
+      num_loops++;
+      return true;
     }
   }
-  std::cout << "\n";
 
   return false;
 }
@@ -125,9 +121,6 @@ int main() {
   while (!done) {
     path.push_back(guard.pos);
     auto res = seen_locations.insert(guard.pos);
-    if (res.second == false) {
-      should_check = true;
-    }
 
     // print_grid(guard);
     std::pair<int, int> next_pos = {
@@ -147,9 +140,7 @@ int main() {
         guard.pos.first + right_next_pos[guard.dir_index].first,
         guard.pos.second + right_next_pos[guard.dir_index].second};
 
-    if (should_check) {
-      bool is_loop = check_path_collision(path, guard);
-    }
+    bool is_loop = check_path_collision(path, guard);
     // GOING RIGHT
     if (grid_char == '#') {
       guard.pos = right_pos;
@@ -165,11 +156,11 @@ int main() {
   std::cout << "path: " << path.size() << " \n";
   ;
   for (auto p : path) {
-    std::cout << "(" << p.first << "," << p.second << ")";
+    // std::cout << "(" << p.first << "," << p.second << ")";
   }
   std::cout << "\nunique locations: " << seen_locations.size() << " \n";
   for (auto s : seen_locations) {
-    std::cout << "(" << s.first << "," << s.second << ")";
+    // std::cout << "(" << s.first << "," << s.second << ")";
   }
   std::cout << "\nnum loops: " << num_loops << " \n";
 }
