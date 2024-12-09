@@ -44,8 +44,6 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
       guard.pos.second + straight_next_pos[guard.dir_index].second};
   char old;
   try {
-    old = grid.at(obs_pos.first).at(obs_pos.second);
-    grid[obs_pos.first][obs_pos.second] = '#';
   } catch (const std::out_of_range &e) {
     std::cout << "next is out of bounds...\n";
   }
@@ -87,13 +85,11 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
       if (line[j] == path[i] && line[j + 1] == path[i + 1]) {
         std::cout << "LOOPED!!\n";
         num_loops++;
-        grid[obs_pos.first][obs_pos.second] = old;
         return true;
       }
     }
   }
 
-  grid[obs_pos.first][obs_pos.second] = old;
   return false;
 }
 
@@ -171,7 +167,7 @@ int main() {
   }
 
   while (!done) {
-    print_grid(guard);
+    // print_grid(guard);
     done = move_guard(guard);
   }
 
