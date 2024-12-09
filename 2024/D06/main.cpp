@@ -73,9 +73,9 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
     }
 
     line.push_back(next);
-    // if (line.size() >= grid.size() * grid[0].size()) {
-    //   break;
-    // }
+    if (line.size() >= grid.size() * grid[0].size()) {
+      break;
+    }
 
     auto penultimate = path[path.size() - 2];
     auto last = path[path.size() - 1];
@@ -172,12 +172,12 @@ int main() {
   std::cout << "\n";
   std::cout << "path: " << path.size() << " \n";
   ;
-  for (auto p : path) {
-    // std::cout << "(" << p.first << "," << p.second << ")";
-  }
+  // for (auto p : path) {
+  //   std::cout << "(" << p.first << "," << p.second << ")";
+  // }
   std::cout << "\nunique locations: " << seen_locations.size() << " \n";
-  for (auto s : seen_locations) {
-    // std::cout << "(" << s.first << "," << s.second << ")";
-  }
+  // for (auto s : seen_locations) {
+  //   std::cout << "(" << s.first << "," << s.second << ")";
+  // }
   std::cout << "\nnum loops: " << num_loops << " \n";
 }
