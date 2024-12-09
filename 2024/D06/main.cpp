@@ -45,7 +45,7 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
     std::cout << "next is out of bounds...\n";
   }
 
-  std::vector<std::pair<int, int>> line = {
+  std::vector<std::pair<int, int>> curr_path = {
       {guard.pos.first + right_next_pos[guard.dir_index].first,
        guard.pos.second + right_next_pos[guard.dir_index].second}};
   guard.rotate();
@@ -54,10 +54,11 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
   while (!should_quit) {
     int dupe_count = 0;
 
-    std::cout << line.back().first << "," << line.back().second << "\n";
+    std::cout << curr_path.back().first << "," << curr_path.back().second
+              << "\n";
     std::pair<int, int> next = {
-        line.back().first + straight_next_pos[guard.dir_index].first,
-        line.back().second + straight_next_pos[guard.dir_index].second};
+        curr_path.back().first + straight_next_pos[guard.dir_index].first,
+        curr_path.back().second + straight_next_pos[guard.dir_index].second};
 
     try {
       auto on_grid = grid.at(next.first).at(next.second);
@@ -65,8 +66,8 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
                              next.second == straight_pos.second)) {
         guard.rotate();
         next = {
-            line.back().first + straight_next_pos[guard.dir_index].first,
-            line.back().second + straight_next_pos[guard.dir_index].second,
+            curr_path.back().first + straight_next_pos[guard.dir_index].first,
+            curr_path.back().second + straight_next_pos[guard.dir_index].second,
         };
       }
     } catch (const std::out_of_range &e) {
@@ -74,16 +75,16 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
       continue;
     }
 
-    line.push_back(next);
+    curr_path.push_back(next);
     // if (line.size() >= grid.size() * grid[0].size()) {
     //   std::cout << "\nLINE TOO BIG!!!\n";
     //   break;
     // }
 
-    auto penultimate = line[line.size() - 2];
-    auto last = line[line.size() - 1];
-    for (size_t j = 0; j < line.size() - 1; j++) {
-      if (line[j] == penultimate && line[j + 1] == last) {
+    auto penultimate = curr_path[curr_path.size() - 2];
+    auto last = curr_path[curr_path.size() - 1];
+    for (size_t j = 0; j < curr_path.size() - 1; j++) {
+      if (curr_path[j] == penultimate && curr_path[j + 1] == last) {
         dupe_count++;
         if (dupe_count >= 2) {
           std::cout << "LOOPED!!\n";
