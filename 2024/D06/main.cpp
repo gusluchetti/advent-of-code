@@ -36,9 +36,20 @@ struct Guard {
   }
 };
 
-// 1896 too low, 1922 incorrect
+// 1896 too low | 1922, 2013 incorrect
 bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
   bool should_quit = false;
+  std::pair<int, int> obs_pos = {
+      guard.pos.first + straight_next_pos[guard.dir_index].first,
+      guard.pos.second + straight_next_pos[guard.dir_index].second};
+  char old;
+  try {
+    old = grid.at(obs_pos.first).at(obs_pos.second);
+    grid[obs_pos.first][obs_pos.second] = '#';
+  } catch (const std::out_of_range &e) {
+    std::cout << "next is out of bounds...\n";
+  }
+
   std::vector<std::pair<int, int>> line = {
       {guard.pos.first + right_next_pos[guard.dir_index].first,
        guard.pos.second + right_next_pos[guard.dir_index].second}};
@@ -68,13 +79,22 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
     if (line.size() >= grid.size() * grid[0].size()) {
       break;
     }
-    if (line.back() == guard.pos) {
-      std::cout << "LOOPED!!\n";
-      num_loops++;
-      return true;
-    }
   }
 
+  for (size_t j = 0; j < line.size() - 1; j++) {
+    std::cout << line[j].first << "," << line[j].second << " ";
+    for (size_t i = 0; i < path.size() - 1; i++) {
+      if (line[j] == path[i] && line[j + 1] == path[i + 1]) {
+        std::cout << "LOOPED!!\n";
+        num_loops++;
+        grid[obs_pos.first][obs_pos.second] = old;
+        return true;
+      }
+    }
+  }
+  std::cout << "\n";
+
+  grid[obs_pos.first][obs_pos.second] = old;
   return false;
 }
 
