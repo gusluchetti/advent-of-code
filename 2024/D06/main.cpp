@@ -42,7 +42,6 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
   std::pair<int, int> obs_pos = {
       guard.pos.first + straight_next_pos[guard.dir_index].first,
       guard.pos.second + straight_next_pos[guard.dir_index].second};
-  char old;
   try {
   } catch (const std::out_of_range &e) {
     std::cout << "next is out of bounds...\n";
@@ -60,7 +59,8 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
 
     try {
       auto on_grid = grid.at(next.first).at(next.second);
-      if (on_grid == '#') {
+      if (on_grid == '#' ||
+          (next.first == obs_pos.first && next.second == obs_pos.second)) {
         guard.rotate();
         next = {
             line.back().first + straight_next_pos[guard.dir_index].first,
@@ -73,16 +73,14 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
     }
 
     line.push_back(next);
-    if (line.size() >= grid.size() * grid[0].size()) {
-      break;
-    }
-  }
+    // if (line.size() >= grid.size() * grid[0].size()) {
+    //   break;
+    // }
 
-  std::cout << "\n\n";
-  for (size_t j = 0; j < line.size() - 1; j++) {
-    // std::cout << line[j].first << "," << line[j].second << " ";
-    for (size_t i = 0; i < path.size() - 1; i++) {
-      if (line[j] == path[i] && line[j + 1] == path[i + 1]) {
+    auto penultimate = path[path.size() - 2];
+    auto last = path[path.size() - 1];
+    for (size_t j = 0; j < line.size() - 1; j++) {
+      if (line[j] == penultimate && line[j + 1] == last) {
         std::cout << "LOOPED!!\n";
         num_loops++;
         return true;
