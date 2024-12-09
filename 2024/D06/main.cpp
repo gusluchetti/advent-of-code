@@ -38,7 +38,7 @@ struct Guard {
 
 // 1896 too low | 1922, 2013 incorrect
 bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
-                          std::pair<int, int> straight_pos) {
+                          std::vector<std::vector<char>> grid) {
   bool should_quit = false;
   try {
   } catch (const std::out_of_range &e) {
@@ -62,8 +62,7 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
 
     try {
       auto on_grid = grid.at(next.first).at(next.second);
-      if (on_grid == '#' || (next.first == straight_pos.first &&
-                             next.second == straight_pos.second)) {
+      if (on_grid == '#') {
         guard.rotate();
         next = {
             curr_path.back().first + straight_next_pos[guard.dir_index].first,
@@ -124,7 +123,9 @@ bool move_guard(Guard &guard) {
       guard.pos.first + right_next_pos[guard.dir_index].first,
       guard.pos.second + right_next_pos[guard.dir_index].second};
 
-  bool is_loop = check_path_collision(path, guard, straight_pos);
+  auto cp_grid = grid;
+  cp_grid[straight_pos.first][straight_pos.second] = '#';
+  bool is_loop = check_path_collision(path, guard, cp_grid);
   std::cout << "\n";
 
   // GOING RIGHT
