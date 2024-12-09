@@ -50,7 +50,7 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
        guard.pos.second + right_next_pos[guard.dir_index].second}};
   guard.rotate();
 
-  std::cout << "\n\ntesting loop...\n";
+  std::cout << "testing loop...\n";
   while (!should_quit) {
     int dupe_count = 0;
 
@@ -99,7 +99,6 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
 
 bool move_guard(Guard &guard) {
   path.push_back(guard.pos);
-  std::cout << path.size() << "\n";
   // if (path.size() >= 27) {
   //   return true;
   // }
@@ -107,8 +106,10 @@ bool move_guard(Guard &guard) {
   std::pair<int, int> straight_pos = {
       guard.pos.first + straight_next_pos[guard.dir_index].first,
       guard.pos.second + straight_next_pos[guard.dir_index].second};
+
+  std::cout << path.size() << "\n";
   std::cout << guard.pos.first << "," << guard.pos.second << "\n";
-  std::cout << straight_pos.first << "," << straight_pos.second << "\n\n";
+  std::cout << straight_pos.first << "," << straight_pos.second << "\n";
 
   char grid_char = '.';
   try {
@@ -123,6 +124,8 @@ bool move_guard(Guard &guard) {
       guard.pos.second + right_next_pos[guard.dir_index].second};
 
   bool is_loop = check_path_collision(path, guard, straight_pos);
+  std::cout << "\n";
+
   // GOING RIGHT
   if (grid_char == '#') {
     guard.pos = right_pos;
