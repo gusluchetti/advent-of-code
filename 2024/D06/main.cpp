@@ -75,14 +75,14 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
     }
 
     line.push_back(next);
-    std::cout << line.size() << "\n";
     if (line.size() >= grid.size() * grid[0].size()) {
       break;
     }
   }
 
+  std::cout << "\n\n";
   for (size_t j = 0; j < line.size() - 1; j++) {
-    std::cout << line[j].first << "," << line[j].second << " ";
+    // std::cout << line[j].first << "," << line[j].second << " ";
     for (size_t i = 0; i < path.size() - 1; i++) {
       if (line[j] == path[i] && line[j + 1] == path[i + 1]) {
         std::cout << "LOOPED!!\n";
@@ -92,7 +92,6 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
       }
     }
   }
-  std::cout << "\n";
 
   grid[obs_pos.first][obs_pos.second] = old;
   return false;
