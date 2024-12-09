@@ -63,11 +63,11 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
     try {
       auto on_grid = grid.at(next.first).at(next.second);
       if (on_grid == '#') {
-        guard.rotate();
         next = {
-            curr_path.back().first + straight_next_pos[guard.dir_index].first,
-            curr_path.back().second + straight_next_pos[guard.dir_index].second,
+            curr_path.back().first + right_next_pos[guard.dir_index].first,
+            curr_path.back().second + right_next_pos[guard.dir_index].second,
         };
+        guard.rotate();
       }
     } catch (const std::out_of_range &e) {
       should_quit = true;
