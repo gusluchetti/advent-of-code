@@ -37,11 +37,9 @@ struct Guard {
 };
 
 // 1896 too low | 1922, 2013 incorrect
-bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
+bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
+                          std::pair<int, int> straight_pos) {
   bool should_quit = false;
-  std::pair<int, int> obs_pos = {
-      guard.pos.first + straight_next_pos[guard.dir_index].first,
-      guard.pos.second + straight_next_pos[guard.dir_index].second};
   try {
   } catch (const std::out_of_range &e) {
     std::cout << "next is out of bounds...\n";
@@ -59,8 +57,8 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
 
     try {
       auto on_grid = grid.at(next.first).at(next.second);
-      if (on_grid == '#' ||
-          (next.first == obs_pos.first && next.second == obs_pos.second)) {
+      if (on_grid == '#' || (next.first == straight_pos.first &&
+                             next.second == straight_pos.second)) {
         guard.rotate();
         next = {
             line.back().first + straight_next_pos[guard.dir_index].first,
@@ -94,13 +92,13 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard) {
 bool move_guard(Guard &guard) {
   path.push_back(guard.pos);
   auto res = seen_locations.insert(guard.pos);
-  std::pair<int, int> next_pos = {
+  std::pair<int, int> straight_pos = {
       guard.pos.first + straight_next_pos[guard.dir_index].first,
       guard.pos.second + straight_next_pos[guard.dir_index].second};
 
   char grid_char = '.';
   try {
-    grid_char = grid.at(next_pos.first).at(next_pos.second);
+    grid_char = grid.at(straight_pos.first).at(straight_pos.second);
   } catch (const std::out_of_range &e) {
     return true;
   }
@@ -110,14 +108,14 @@ bool move_guard(Guard &guard) {
       guard.pos.first + right_next_pos[guard.dir_index].first,
       guard.pos.second + right_next_pos[guard.dir_index].second};
 
-  bool is_loop = check_path_collision(path, guard);
+  bool is_loop = check_path_collision(path, guard, straight_pos);
   // GOING RIGHT
   if (grid_char == '#') {
     guard.pos = right_pos;
     guard.rotate();
     // GOING FORWARD
   } else {
-    guard.pos = next_pos;
+    guard.pos = straight_pos;
   }
   grid[guard.pos.first][guard.pos.second] = guard.dir();
 
