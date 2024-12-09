@@ -72,6 +72,8 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
 
     line.push_back(next);
     if (line.size() >= grid.size() * grid[0].size()) {
+      std::cout << next.first << "," << next.second << "\n";
+      std::cout << "\nLINE TOO BIG!!!\n";
       break;
     }
 
