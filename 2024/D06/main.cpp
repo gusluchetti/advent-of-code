@@ -46,7 +46,6 @@ bool check_path_collision(Guard guard_cp,
        guard_cp.pos.second + right_next_pos[guard_cp.dir_index].second}};
   guard_cp.rotate();
 
-  std::cout << "testing loop...\n";
   while (!should_quit) {
     int dupe_count = 0;
 
@@ -101,10 +100,9 @@ bool move_guard(Guard &guard) {
       guard.pos.first + straight_next_pos[guard.dir_index].first,
       guard.pos.second + straight_next_pos[guard.dir_index].second};
 
-  std::cout << path.size() << "\n";
-  std::cout << "from " << guard.pos.first << "," << guard.pos.second;
-  std::cout << " (try) to " << straight_pos.first << "," << straight_pos.second
-            << "\n";
+  std::cout << path.size() << " | try " << guard.pos.first << ","
+            << guard.pos.second;
+  std::cout << " to " << straight_pos.first << "," << straight_pos.second;
 
   char grid_char = '.';
   try {
@@ -182,7 +180,7 @@ int main() {
     done = move_guard(guard);
   }
 
-  std::cout << "\n";
+  std::cout << "\n\n";
   std::cout << "path: " << path.size() << " \n";
   // for (auto p : path) {
   //   std::cout << "(" << p.first << "," << p.second << ")";
