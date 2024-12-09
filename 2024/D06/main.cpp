@@ -20,7 +20,7 @@ std::pair<int, int> right_next_pos[4] = {{0, +1}, {+1, 0}, {0, -1}, {-1, 0}};
 bool done = false;
 bool add_obstacle = false;
 std::vector<std::pair<int, int>> path = {};
-std::set<std::pair<int, int>> seen_locations = {};
+std::set<std::pair<int, int>> unique_locations = {};
 std::set<std::pair<int, int>> obstacles = {};
 
 struct Guard {
@@ -76,7 +76,6 @@ bool check_path_collision(Guard guard_cp,
       if (curr_path[j] == penultimate && curr_path[j + 1] == last) {
         dupe_count++;
         if (dupe_count >= 2) {
-          std::cout << "LOOPED!!\n";
           return true;
         }
       }
@@ -89,13 +88,15 @@ bool check_path_collision(Guard guard_cp,
 bool move_guard(Guard &guard) {
   path.push_back(guard.pos);
   if (add_obstacle) {
+    std::cout << "LOOPED at " << guard.pos.first << "," << guard.pos.second
+              << "\n";
     obstacles.insert(guard.pos);
     add_obstacle = false;
   }
   // if (path.size() >= 27) {
   //   return true;
   // }
-  auto res = seen_locations.insert(guard.pos);
+  auto res = unique_locations.insert(guard.pos);
   std::pair<int, int> straight_pos = {
       guard.pos.first + straight_next_pos[guard.dir_index].first,
       guard.pos.second + straight_next_pos[guard.dir_index].second};
@@ -186,9 +187,12 @@ int main() {
   // for (auto p : path) {
   //   std::cout << "(" << p.first << "," << p.second << ")";
   // }
-  std::cout << "\nunique locations: " << seen_locations.size() << " \n";
-  // for (auto s : seen_locations) {
+  std::cout << "unique locations: " << unique_locations.size() << " \n";
+  // for (auto u : unique_locations) {
   //   std::cout << "(" << s.first << "," << s.second << ")";
   // }
-  std::cout << "\nnum loops: " << obstacles.size() << " \n";
+  std::cout << "num loops: " << obstacles.size() << " \n";
+  // for (auto o : obstacles) {
+  //   std::cout << "(" << o.first << "," << o.second << ")";
+  // }
 }
