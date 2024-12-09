@@ -50,7 +50,11 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
        guard.pos.second + right_next_pos[guard.dir_index].second}};
   guard.rotate();
 
+  std::cout << "\n\ntesting loop...\n";
   while (!should_quit) {
+    int dupe_count = 0;
+
+    std::cout << line.back().first << "," << line.back().second << "\n";
     std::pair<int, int> next = {
         line.back().first + straight_next_pos[guard.dir_index].first,
         line.back().second + straight_next_pos[guard.dir_index].second};
@@ -71,19 +75,21 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
     }
 
     line.push_back(next);
-    if (line.size() >= grid.size() * grid[0].size()) {
-      std::cout << next.first << "," << next.second << "\n";
-      std::cout << "\nLINE TOO BIG!!!\n";
-      break;
-    }
+    // if (line.size() >= grid.size() * grid[0].size()) {
+    //   std::cout << "\nLINE TOO BIG!!!\n";
+    //   break;
+    // }
 
-    auto penultimate = path[path.size() - 2];
-    auto last = path[path.size() - 1];
+    auto penultimate = line[line.size() - 2];
+    auto last = line[line.size() - 1];
     for (size_t j = 0; j < line.size() - 1; j++) {
       if (line[j] == penultimate && line[j + 1] == last) {
-        std::cout << "LOOPED!!\n";
-        num_loops++;
-        return true;
+        dupe_count++;
+        if (dupe_count >= 2) {
+          std::cout << "LOOPED!!\n";
+          num_loops++;
+          return true;
+        }
       }
     }
   }
@@ -93,10 +99,16 @@ bool check_path_collision(std::vector<std::pair<int, int>> &path, Guard guard,
 
 bool move_guard(Guard &guard) {
   path.push_back(guard.pos);
+  std::cout << path.size() << "\n";
+  // if (path.size() >= 27) {
+  //   return true;
+  // }
   auto res = seen_locations.insert(guard.pos);
   std::pair<int, int> straight_pos = {
       guard.pos.first + straight_next_pos[guard.dir_index].first,
       guard.pos.second + straight_next_pos[guard.dir_index].second};
+  std::cout << guard.pos.first << "," << guard.pos.second << "\n";
+  std::cout << straight_pos.first << "," << straight_pos.second << "\n\n";
 
   char grid_char = '.';
   try {
