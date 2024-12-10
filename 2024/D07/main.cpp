@@ -33,7 +33,7 @@ int main() {
     equations.push_back(curr);
   }
 
-  int p1 = 0;
+  long p1 = 0;
   std::list<char> opts = {'+', '*'};
 
   for (auto e : equations) {
@@ -42,19 +42,19 @@ int main() {
     }
     std::cout << "\n";
 
-    int test_value = e[0];
-    std::vector<int> valid_subsets = {e[1]};
+    long test_value = e[0];
+    std::vector<long> valid_subsets = {e[1]};
     bool finished = false;
 
     int initial_size;
-    std::vector<int> new_subsets;
+    std::vector<long> new_subsets;
     while (valid_subsets.size() > 0 || !finished) {
       for (int n = 2; n < e.size(); n++) {
         initial_size = valid_subsets.size();
         new_subsets = {};
 
         for (int i = 0; i < valid_subsets.size(); i++) {
-          int v = valid_subsets[i];
+          long v = valid_subsets[i];
           for (char o : opts) {
             if (o == '+') {
               new_subsets.push_back(v + e[n]);
