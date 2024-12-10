@@ -6,7 +6,8 @@
 
 std::map<char, std::vector<std::pair<int, int>>> antennas = {};
 std::vector<std::vector<char>> grid = {};
-std::set<std::pair<int, int>> antinode_grid = {};
+std::set<std::pair<int, int>> p1_antinodes = {};
+std::set<std::pair<int, int>> p2_antinodes = {};
 
 int main() {
   std::ios::sync_with_stdio(0);
@@ -58,14 +59,26 @@ int main() {
         std::pair<int, int> diff = {one.first - another.first,
                                     one.second - another.second};
 
-        std::pair<int, int> nodes[2] = {
+        std::pair<int, int> p1_nodes[2] = {
             {one.first + diff.first, one.second + diff.second},
             {another.first - diff.first, another.second - diff.second}};
 
-        for (auto n : nodes) {
+        for (auto n : p1_nodes) {
           if ((n.first >= 0 && n.first < max_y) &&
               (n.second >= 0 && n.second < max_x)) {
-            antinode_grid.insert(n);
+            p1_antinodes.insert(n);
+            if (grid[n.first][n.second] == '.') {
+              grid[n.first][n.second] = '#';
+            }
+          }
+        }
+
+        std::vector<std::pair<int, int>> p2_nodes = {};
+
+        for (auto n : p2_nodes) {
+          if ((n.first >= 0 && n.first < max_y) &&
+              (n.second >= 0 && n.second < max_x)) {
+            p2_antinodes.insert(n);
             if (grid[n.first][n.second] == '.') {
               grid[n.first][n.second] = '#';
             }
@@ -86,8 +99,8 @@ int main() {
 
   std::cout << "num. antennas: " << antennas.size() << "\n";
 
-  std::cout << "antinodes: " << antinode_grid.size() << "\n";
-  for (auto an : antinode_grid) {
+  std::cout << "antinodes: " << p1_antinodes.size() << "\n";
+  for (auto an : p1_antinodes) {
     std::cout << an.first << "," << an.second << " ";
   }
   std::cout << "\n";
