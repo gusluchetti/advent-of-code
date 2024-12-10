@@ -1,5 +1,5 @@
+#include <algorithm>
 #include <iostream>
-#include <list>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -21,7 +21,6 @@ int main() {
     }
 
     auto res = line.find(':');
-    std::cout << res;
     long result = std::stol(line.substr(0, res));
     curr.push_back(result);
     std::stringstream ss(line.substr(res + 2));
@@ -34,10 +33,14 @@ int main() {
   }
 
   // 28_729_823_246_578, too low
+  // 28_730_327_770_375
   long p1 = 0;
-  std::list<char> opts = {'+', '*'};
 
-  for (auto e : equations) {
+  for (int a = 0; a < equations.size(); a++) {
+    // if (a >= 10) {
+    //   break;
+    // }
+    std::vector<long> e = equations[a];
     for (auto x : e) {
       std::cout << x << " ";
     }
@@ -46,40 +49,41 @@ int main() {
     std::vector<long> valid_subsets = {e[1]};
     bool finished = false;
 
-    int initial_size;
     std::vector<long> new_subsets;
     while (valid_subsets.size() > 0 && !finished) {
       for (size_t n = 2; n < e.size(); n++) {
-        initial_size = valid_subsets.size();
+        int initial_size = valid_subsets.size();
         new_subsets = {};
 
         for (size_t i = 0; i < valid_subsets.size(); i++) {
           long v = valid_subsets[i];
-          for (char o : opts) {
-            if (o == '+') {
-              new_subsets.push_back(v + e[n]);
-            } else if (o == '*') {
-              new_subsets.push_back(v * e[n]);
-            }
-          }
+
+          // doing possible options, sum and mult
+          new_subsets.push_back(v + e[n]);
+          new_subsets.push_back(v * e[n]);
         }
 
         for (auto ns : new_subsets) {
-          if ((ns < test_value && n < e.size() - 1) ||
-              (ns == test_value && n == e.size() - 1)) {
+          if (ns <= test_value) {
             valid_subsets.push_back(ns);
           }
         }
         valid_subsets.erase(valid_subsets.begin(),
                             valid_subsets.begin() + initial_size);
-
-        std::cout << "\ncurr w/ pos " << n << " ";
-        for (auto vs : valid_subsets) {
-          std::cout << vs << " ";
-        }
       }
 
       finished = true;
+    }
+
+    // NOTE: prune in case something went bad
+    valid_subsets.erase(
+        std::remove_if(valid_subsets.begin(), valid_subsets.end(),
+                       [test_value](long vs) { return vs != test_value; }),
+        valid_subsets.end());
+
+    std::cout << "\nvalid subsets: ";
+    for (auto vs : valid_subsets) {
+      std::cout << vs << " ";
     }
     std::cout << "\nfound " << valid_subsets.size() << " valid subsets\n\n";
     if (valid_subsets.size() >= 1) {
