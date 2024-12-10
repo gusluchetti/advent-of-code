@@ -32,6 +32,7 @@ int main() {
     equations.push_back(curr);
   }
 
+  int p1 = 0;
   std::list<char> opts = {'+', '*'};
 
   for (auto e : equations) {
@@ -68,18 +69,17 @@ int main() {
             valid_subsets.push_back(ns);
           }
         }
-        std::cout << "\n";
         valid_subsets.erase(valid_subsets.begin(),
                             valid_subsets.begin() + initial_size);
       }
-      std::cout << "finished all values\n\n";
-      for (auto v : valid_subsets) {
-        std::cout << v << " ";
-      }
-      std::cout << "\n";
       finished = true;
-      break;
+      std::cout << "found " << valid_subsets.size() << " valid subsets\n";
+      if (valid_subsets.size() >= 1) {
+        p1 += e[0];
+      }
     }
   }
+
+  std::cout << "\n\ntotal calibration result: " << p1;
   std::cout << "\n";
 }
