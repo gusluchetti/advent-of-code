@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -58,9 +59,11 @@ int main() {
         for (size_t i = 0; i < valid_subsets.size(); i++) {
           long v = valid_subsets[i];
 
-          // doing possible options, sum and mult
+          // opts: sum, mult and concatenation
           new_subsets.push_back(v + e[n]);
           new_subsets.push_back(v * e[n]);
+          new_subsets.push_back(v * pow(10, std::to_string(e[n]).length()) +
+                                e[n]);
         }
 
         for (auto ns : new_subsets) {
