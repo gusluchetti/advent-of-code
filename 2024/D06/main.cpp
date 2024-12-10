@@ -15,7 +15,6 @@
 std::vector<std::vector<char>> grid;
 char guard_directions[4] = {'^', '>', 'v', '<'};
 std::pair<int, int> straight_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
-std::pair<int, int> right_next_pos[4] = {{0, +1}, {+1, 0}, {0, -1}, {-1, 0}};
 
 bool done = false;
 bool add_obstacle = false;
@@ -41,10 +40,10 @@ bool check_path_collision(Guard guard_cp,
                           std::vector<std::vector<char>> grid_cp) {
   bool should_quit = false;
 
-  std::vector<std::pair<int, int>> curr_path = {
-      {guard_cp.pos.first + right_next_pos[guard_cp.dir_index].first,
-       guard_cp.pos.second + right_next_pos[guard_cp.dir_index].second}};
   guard_cp.rotate();
+  std::vector<std::pair<int, int>> curr_path = {
+      {guard_cp.pos.first + straight_next_pos[guard_cp.dir_index].first,
+       guard_cp.pos.second + straight_next_pos[guard_cp.dir_index].second}};
 
   while (!should_quit) {
     int dupe_count = 0;
@@ -56,11 +55,13 @@ bool check_path_collision(Guard guard_cp,
     try {
       auto on_grid = grid_cp.at(next.first).at(next.second);
       if (on_grid == '#') {
-        next = {
-            curr_path.back().first + right_next_pos[guard_cp.dir_index].first,
-            curr_path.back().second + right_next_pos[guard_cp.dir_index].second,
-        };
         guard_cp.rotate();
+        next = {
+            curr_path.back().first +
+                straight_next_pos[guard_cp.dir_index].first,
+            curr_path.back().second +
+                straight_next_pos[guard_cp.dir_index].second,
+        };
       }
     } catch (const std::out_of_range &e) {
       should_quit = true;
@@ -112,9 +113,13 @@ bool move_guard(Guard &guard) {
   }
 
   grid[guard.pos.first][guard.pos.second] = '.';
+  guard.rotate();
   std::pair<int, int> right_pos = {
-      guard.pos.first + right_next_pos[guard.dir_index].first,
-      guard.pos.second + right_next_pos[guard.dir_index].second};
+      guard.pos.first + straight_next_pos[guard.dir_index].first,
+      guard.pos.second + straight_next_pos[guard.dir_index].second};
+  guard.rotate();
+  guard.rotate();
+  guard.rotate();
 
   auto cp_grid = grid;
   cp_grid[straight_pos.first][straight_pos.second] = '#';
