@@ -33,34 +33,52 @@ int main() {
   }
 
   std::list<char> opts = {'+', '*'};
-  int spaces = 0;
-  int sum = 0;
-  int initial_size = 0;
+
   for (auto e : equations) {
+    for (auto x : e) {
+      std::cout << x << " ";
+    }
+    std::cout << "\n";
+
     int test_value = e[0];
-    bool finished = false;
     std::vector<int> valid_subsets = {e[1]};
-    spaces = e.size() - 2;
-    while (valid_subsets.size() > 0) {
-      initial_size = valid_subsets.size();
-      for (int i = 0; i < valid_subsets.size(); i++) {
-        int v = valid_subsets[i];
-        for (int s = 2; s <= spaces + 1; s++) {
+    bool finished = false;
+
+    int initial_size;
+    std::vector<int> new_subsets;
+    while (valid_subsets.size() > 0 || !finished) {
+      for (int n = 2; n < e.size(); n++) {
+        initial_size = valid_subsets.size();
+        new_subsets = {};
+
+        for (int i = 0; i < valid_subsets.size(); i++) {
+          int v = valid_subsets[i];
           for (char o : opts) {
             if (o == '+') {
-              v += e[s];
+              new_subsets.push_back(v + e[n]);
             } else if (o == '*') {
-              v *= e[s];
-            }
-
-            if (v < test_value || (v == test_value && s == spaces + 1)) {
-              valid_subsets.push_back(v);
+              new_subsets.push_back(v * e[n]);
             }
           }
         }
+
+        for (auto ns : new_subsets) {
+          if ((ns < test_value && n < e.size() - 1) ||
+              (ns == test_value && n == e.size() - 1)) {
+            valid_subsets.push_back(ns);
+          }
+        }
+        std::cout << "\n";
+        valid_subsets.erase(valid_subsets.begin(),
+                            valid_subsets.begin() + initial_size);
       }
-      valid_subsets.erase(valid_subsets.begin(),
-                          valid_subsets.begin() + initial_size);
+      std::cout << "finished all values\n\n";
+      for (auto v : valid_subsets) {
+        std::cout << v << " ";
+      }
+      std::cout << "\n";
+      finished = true;
+      break;
     }
   }
   std::cout << "\n";
