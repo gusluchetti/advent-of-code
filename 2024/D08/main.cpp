@@ -28,14 +28,13 @@ int main() {
     grid.push_back(curr);
   }
 
-  size_t max_y = grid.size() - 1;
-  size_t max_x = grid[0].size() - 1;
+  size_t max_y = grid.size();
+  size_t max_x = grid[0].size();
 
   for (size_t y = 0; y < max_y; y++) {
     std::vector<char> char_list = grid[y];
     for (size_t x = 0; x < max_x; x++) {
       char c = char_list[x];
-      std::cout << c;
       if (c != '.') {
         auto found = antennas.find(c);
         if (found != antennas.end()) {
@@ -56,7 +55,6 @@ int main() {
       std::cout << one.first << "," << one.second << " ";
       for (size_t j = i + 1; j < a.second.size(); ++j) {
         std::pair<int, int> another = a.second[j];
-
         std::pair<int, int> diff = {one.first - another.first,
                                     one.second - another.second};
 
@@ -65,8 +63,8 @@ int main() {
             {another.first - diff.first, another.second - diff.second}};
 
         for (auto n : nodes) {
-          if ((n.first >= 0 && n.first <= max_y) &&
-              (n.second >= 0 && n.second <= max_x)) {
+          if ((n.first >= 0 && n.first < max_y) &&
+              (n.second >= 0 && n.second < max_x)) {
             antinode_grid.insert(n);
             if (grid[n.first][n.second] == '.') {
               grid[n.first][n.second] = '#';
@@ -76,6 +74,13 @@ int main() {
       }
     }
 
+    std::cout << "\n";
+  }
+
+  for (auto y : grid) {
+    for (auto x : y) {
+      std::cout << x;
+    }
     std::cout << "\n";
   }
 
