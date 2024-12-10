@@ -1,10 +1,9 @@
 #include <iostream>
 #include <map>
-#include <set>
 #include <utility>
 #include <vector>
 
-std::map<char, std::set<std::pair<int, int>>> antennas = {};
+std::map<char, std::vector<std::pair<int, int>>> antennas = {};
 std::vector<std::vector<char>> grid = {};
 std::vector<std::vector<char>> antinode_grid = {};
 
@@ -39,7 +38,7 @@ int main() {
       if (c != '.') {
         auto found = antennas.find(c);
         if (found != antennas.end()) {
-          found->second.insert({y, x});
+          found->second.push_back({y, x});
         } else {
           antennas.insert({c, {{y, x}}});
         }
@@ -50,7 +49,8 @@ int main() {
 
   for (auto a : antennas) {
     std::cout << a.first << " | ";
-    for (auto s : a.second) {
+    for (size_t i = 0; i < a.second.size(); i++) {
+      std::pair<int, int> s = a.second[i];
       std::cout << s.first << "," << s.second << " ";
     }
     std::cout << "\n";
