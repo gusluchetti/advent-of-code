@@ -15,6 +15,7 @@
 std::vector<std::vector<char>> grid;
 char guard_directions[4] = {'^', '>', 'v', '<'};
 std::pair<int, int> straight_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
+std::pair<int, int> right_next_pos[4] = {{0, +1}, {+1, 0}, {0, -1}, {-1, 0}};
 
 bool done = false;
 bool add_obstacle = false;
@@ -97,44 +98,43 @@ bool move_guard(Guard &guard) {
   //   return true;
   // }
   auto res = unique_locations.insert(guard.pos);
-  std::pair<int, int> straight_pos = {
+  std::pair<int, int> next = {
       guard.pos.first + straight_next_pos[guard.dir_index].first,
       guard.pos.second + straight_next_pos[guard.dir_index].second};
 
   std::cout << path.size() << " | try " << guard.pos.first << ","
             << guard.pos.second;
-  std::cout << " to " << straight_pos.first << "," << straight_pos.second;
+  std::cout << " to " << next.first << "," << next.second;
 
   char grid_char = '.';
   try {
-    grid_char = grid.at(straight_pos.first).at(straight_pos.second);
+    grid_char = grid.at(next.first).at(next.second);
   } catch (const std::out_of_range &e) {
     return true;
   }
 
   grid[guard.pos.first][guard.pos.second] = '.';
-  guard.rotate();
-  std::pair<int, int> right_pos = {
-      guard.pos.first + straight_next_pos[guard.dir_index].first,
-      guard.pos.second + straight_next_pos[guard.dir_index].second};
-  guard.rotate();
-  guard.rotate();
-  guard.rotate();
+
+  while (grid_char == '#') {
+    guard.rotate();
+    next = {guard.pos.first + straight_next_pos[guard.dir_index].first,
+            guard.pos.second + straight_next_pos[guard.dir_index].second};
+    try {
+      grid_char = grid.at(next.first).at(next.second);
+    } catch (const std::out_of_range &e) {
+      return true;
+    }
+  }
 
   auto cp_grid = grid;
-  cp_grid[straight_pos.first][straight_pos.second] = '#';
+  cp_grid[next.first][next.second] = '#';
   bool is_loop = check_path_collision(guard, cp_grid);
   if (is_loop) {
     add_obstacle = true;
   }
   std::cout << "\n";
+  guard.pos = next;
 
-  if (grid_char == '#') { // GOING RIGHT
-    guard.pos = right_pos;
-    guard.rotate();
-  } else { // GOING FORWARD
-    guard.pos = straight_pos;
-  }
   grid[guard.pos.first][guard.pos.second] = guard.dir();
 
   return false;
@@ -181,7 +181,7 @@ int main() {
   }
 
   while (!done) {
-    // print_grid(guard);
+    print_grid(guard);
     done = move_guard(guard);
   }
 
