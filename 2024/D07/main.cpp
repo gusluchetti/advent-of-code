@@ -9,11 +9,11 @@ int main() {
   std::cin.tie(0);
 
   std::string line;
-  std::vector<std::vector<int>> equations;
+  std::vector<std::vector<long>> equations;
 
   // read grid
   while (std::cin) {
-    std::vector<int> curr;
+    std::vector<long> curr;
     getline(std::cin, line);
     if (std::cin.eof()) {
       std::cout << "eof" << "\n";
@@ -21,10 +21,11 @@ int main() {
     }
 
     auto res = line.find(':');
-    int result = std::stoi(line.substr(0, res));
+    std::cout << res;
+    long result = std::stol(line.substr(0, res));
     curr.push_back(result);
     std::stringstream ss(line.substr(res + 2));
-    int num;
+    long num;
     while (ss >> num) {
       curr.push_back(num);
     }
