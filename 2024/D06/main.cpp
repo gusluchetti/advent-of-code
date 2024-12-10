@@ -7,17 +7,17 @@
 #include <utility>
 #include <vector>
 
-std::vector<std::vector<char>> grid;
-char guard_directions[4] = {'^', '>', 'v', '<'};
-std::pair<int, int> straight_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
-std::pair<int, int> right_next_pos[4] = {{0, +1}, {+1, 0}, {0, -1}, {-1, 0}};
-
 bool done_p1 = false;
 bool done_p2 = false;
 bool add_obstacle = false;
-std::vector<std::pair<std::pair<int, int>, int>> path = {};
-std::set<std::pair<int, int>> unique_locations = {};
-std::set<std::pair<int, int>> obstacles = {};
+
+std::vector<std::vector<char>> g_grid;
+std::vector<std::pair<std::pair<int, int>, int>> g_path = {};
+std::set<std::pair<int, int>> g_unique_locations = {};
+std::set<std::pair<int, int>> g_obstacles = {};
+
+char guard_directions[4] = {'^', '>', 'v', '<'};
+std::pair<int, int> straight_next_pos[4] = {{-1, 0}, {0, +1}, {+1, 0}, {0, -1}};
 
 struct Guard {
   int dir_index = 0;
@@ -32,7 +32,7 @@ struct Guard {
   }
 };
 
-void print_grid(Guard &guard) {
+void print_grid(Guard guard, std::vector<std::vector<char>> grid) {
   for (size_t y = 0; y < grid.size(); y++) {
     for (size_t x = 0; x < grid[0].size(); x++) {
       std::cout << grid[y][x];
@@ -42,6 +42,35 @@ void print_grid(Guard &guard) {
   std::cout << guard.pos.first << "," << guard.pos.second << "\n";
   std::cout << guard.dir_index << " " << guard.dir() << "\n";
   std::cout << "\n";
+}
+
+void p1(Guard guard, std::vector<std::vector<char>> grid) {
+  while (!done_p1) {
+    g_path.push_back(std::make_pair(
+        std::make_pair(guard.pos.first, guard.pos.second), guard.dir_index));
+    g_unique_locations.insert({guard.pos.first, guard.pos.second});
+    print_grid(guard, grid);
+    try {
+      std::pair<int, int> next = {
+          guard.pos.first + straight_next_pos[guard.dir_index].first,
+          guard.pos.second + straight_next_pos[guard.dir_index].second};
+      auto grid_char = grid.at(next.first).at(next.second);
+      while (grid_char == '#') {
+        guard.rotate();
+        next = {guard.pos.first + straight_next_pos[guard.dir_index].first,
+                guard.pos.second + straight_next_pos[guard.dir_index].second};
+        grid_char = grid.at(next.first).at(next.second);
+      }
+
+      grid[guard.pos.first][guard.pos.second] = '.';
+      guard.pos = next;
+      grid[next.first][next.second] = guard.dir();
+
+    } catch (const std::out_of_range &e) {
+      done_p1 = true;
+      continue;
+    }
+  }
 }
 
 int main() {
@@ -70,39 +99,14 @@ int main() {
         }
       }
     }
-    grid.push_back(std::vector<char>(line.begin(), line.end()));
+    g_grid.push_back(std::vector<char>(line.begin(), line.end()));
     count++;
   }
 
-  while (!done_p1) {
-    path.push_back(std::make_pair(
-        std::make_pair(guard.pos.first, guard.pos.second), guard.dir_index));
-    unique_locations.insert({guard.pos.first, guard.pos.second});
-    print_grid(guard);
-    try {
-      std::pair<int, int> next = {
-          guard.pos.first + straight_next_pos[guard.dir_index].first,
-          guard.pos.second + straight_next_pos[guard.dir_index].second};
-      auto grid_char = grid.at(next.first).at(next.second);
-      while (grid_char == '#') {
-        guard.rotate();
-        next = {guard.pos.first + straight_next_pos[guard.dir_index].first,
-                guard.pos.second + straight_next_pos[guard.dir_index].second};
-        grid_char = grid.at(next.first).at(next.second);
-      }
-
-      grid[guard.pos.first][guard.pos.second] = '.';
-      guard.pos = next;
-      grid[next.first][next.second] = guard.dir();
-
-    } catch (const std::out_of_range &e) {
-      done_p1 = true;
-      continue;
-    }
-  }
+  p1(guard, g_grid);
 
   std::cout << "\n\n";
-  std::cout << "path: " << path.size() << " \n";
-  std::cout << "unique locations: " << unique_locations.size() << " \n";
-  std::cout << "num loops: " << obstacles.size() << " \n";
+  std::cout << "path: " << g_path.size() << " \n";
+  std::cout << "unique locations: " << g_unique_locations.size() << " \n";
+  std::cout << "num loops: " << g_obstacles.size() << " \n";
 }
