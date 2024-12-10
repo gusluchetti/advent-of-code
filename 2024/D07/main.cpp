@@ -33,6 +33,7 @@ int main() {
     equations.push_back(curr);
   }
 
+  // 28_729_823_246_578
   long p1 = 0;
   std::list<char> opts = {'+', '*'};
 
@@ -40,7 +41,6 @@ int main() {
     for (auto x : e) {
       std::cout << x << " ";
     }
-    std::cout << "\n";
 
     long test_value = e[0];
     std::vector<long> valid_subsets = {e[1]};
@@ -48,12 +48,12 @@ int main() {
 
     int initial_size;
     std::vector<long> new_subsets;
-    while (valid_subsets.size() > 0 || !finished) {
-      for (int n = 2; n < e.size(); n++) {
+    while (valid_subsets.size() > 0 && !finished) {
+      for (size_t n = 2; n < e.size(); n++) {
         initial_size = valid_subsets.size();
         new_subsets = {};
 
-        for (int i = 0; i < valid_subsets.size(); i++) {
+        for (size_t i = 0; i < valid_subsets.size(); i++) {
           long v = valid_subsets[i];
           for (char o : opts) {
             if (o == '+') {
@@ -72,12 +72,18 @@ int main() {
         }
         valid_subsets.erase(valid_subsets.begin(),
                             valid_subsets.begin() + initial_size);
+
+        std::cout << "\nat pos " << n << " ";
+        for (auto vs : valid_subsets) {
+          std::cout << vs << " ";
+        }
       }
+
       finished = true;
-      std::cout << "found " << valid_subsets.size() << " valid subsets\n";
-      if (valid_subsets.size() >= 1) {
-        p1 += e[0];
-      }
+    }
+    std::cout << "\nfound " << valid_subsets.size() << " valid subsets\n\n";
+    if (valid_subsets.size() >= 1) {
+      p1 += e[0];
     }
   }
 
