@@ -33,7 +33,7 @@ int main() {
     equations.push_back(curr);
   }
 
-  // 28_729_823_246_578
+  // 28_729_823_246_578, too low
   long p1 = 0;
   std::list<char> opts = {'+', '*'};
 
@@ -73,7 +73,7 @@ int main() {
         valid_subsets.erase(valid_subsets.begin(),
                             valid_subsets.begin() + initial_size);
 
-        std::cout << "\nat pos " << n << " ";
+        std::cout << "\ncurr w/ pos " << n << " ";
         for (auto vs : valid_subsets) {
           std::cout << vs << " ";
         }
