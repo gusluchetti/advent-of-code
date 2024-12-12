@@ -26,20 +26,29 @@ int main() {
     }
   }
 
-  int diskmap[disk_size];
+  std::vector<int> diskmap(disk_size, -1);
+  for (auto num : diskmap) {
+    std::cout << num << " ";
+  }
+  std::cout << "\n";
+
+  std::cout << "\n";
   for (size_t i = 0; i < values.size(); i++) {
     int num = values[i];
     for (int x = 0; x < num; x++) {
+      std::cout << i << "," << x << " (" << num << ") ";
       if (i % 2 == 0 || i == 0) {
         diskmap[i + x] = i;
       } else {
       }
+
+      for (size_t i = 0; i < diskmap.size(); i++) {
+        int x = diskmap[i];
+        std::cout << x << " ";
+      }
+      std::cout << "\n";
     }
   }
 
-  for (size_t i = 0; i < sizeof(diskmap); i++) {
-    int x = diskmap[i];
-    std::cout << x;
-  }
   std::cout << "\n";
 }
