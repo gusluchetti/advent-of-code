@@ -2,9 +2,21 @@ from pathlib import Path
 script_dir = Path(__file__).parent
 file_path = script_dir / './input.txt'
 
-freq = 0
 lines = file_path.read_text().splitlines()
 
-freq = sum(float(line) for line in lines)
+p1_res = sum(float(line) for line in lines)
+print("p1: {0}".format(p1_res))
 
-print(freq)
+p2_freq = 0
+seen_freqs = set()
+done = False
+while not done:
+    for line in lines:
+        print(p2_freq)
+        if p2_freq in seen_freqs:
+            print("p2: {0}".format(p2_freq))
+            done = True
+            break
+        seen_freqs.add(p2_freq)
+        p2_freq += float(line)
+    print(len(seen_freqs))
